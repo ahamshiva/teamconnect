@@ -1,5 +1,40 @@
 # HANDOVER — team_games
 
+## Where We Are (2026-09-04 session, part 16 · version control and a public repo)
+Asked for further recommendations; ranked seven and said plainly that none of them beat the rehearsal,
+which has been the next step for eight sessions. Top of the list was the structural risk: **8,779 lines of
+source and no version control**, with a July copy as the only restore point. Fixed that.
+
+`git init`, a real `.gitignore` (local tooling, 15MB of test screenshots, and the superseded PRIME TIME
+copies stay on disk but out of the repo), and an initial commit of **78 files / 18,589 lines**, pushed to
+**https://github.com/ahamshiva/teamconnect** (public, `main`).
+
+A pre-push scan found the thing that mattered: `Teams.SAMPLE_ROSTER` shipped **15 real colleague first
+names**, compiled into `team-connect.html` and quoted in `DECISIONS.md`. On a public repo that is the
+team's roster published permanently. Venkat chose to swap them for generic demo names spread across the
+cultures the app is used by (Ana, Bao, Chen, Deepa, Ellie, Farid, Grace, Hari, Ivy, Jomar, Kiran, Lian,
+Mei, Nikhil, Omar), and the DECISIONS line was redacted. Rebuilt, both suites re-run, then verified the
+**published** file over the GitHub API rather than trusting the local copy. No secrets, emails or absolute
+paths anywhere in the tracked tree.
+
+Also removed eight stale `fail-*.png` from `tests/artifacts/` that sat beside a passing `results.json` and
+would have misled the next reader.
+
+**Exact Next Step: the rehearsal. Still.** `./serve.sh`, **Rehearse**, then two or three colleagues on real
+Zoom. Nothing left in the backlog outranks it.
+
+**Recommended after that, in order:** fact-audit the ~260 claim-bearing content items (quiz 84,
+factfiction 60, balderdash 48, wronganswers 44, rankit 16, missions 8 — no `verified` or `source` field
+exists on any of them, and they get read aloud); a `@media print` run sheet so a dead laptop does not end
+the session; a Zoom-compression contrast pass on the presentation, which only a real screen share can
+judge; auto-backup when a session ends. A LICENSE file is missing and the repo is public.
+
+**Files this part:** `.gitignore` (new), `src/core/33-teams.js`, `DECISIONS.md`, rebuilt
+`team-connect.html` + `dev.html`.
+**Suites:** `run.js` 402 · `edge.js` 58 · both pass, before and after the change.
+**What is blocked:** nothing.
+**Session cost:** roughly $2-4 USD.
+
 ## Where We Are (2026-09-03 session, part 15 · boundary sanitisation and a UI fit pass)
 The numeric sweep really was incomplete: grepping for `Number(` cannot find bare arithmetic like
 `s.count * s.seconds`. An exhaustive probe (eight kinds of junk into every numeric setting of every game)

@@ -538,3 +538,20 @@ reports zero overlapping pairs.
 
 Suites: `run.js` **402**, `edge.js` 56 → **58**, including a regression that the countdown digits fit
 inside the ring.
+
+## 2026-09-04 — Version control, and no real names in source
+- **git init, pushed to https://github.com/ahamshiva/teamconnect (public, `main`).** Eight sessions of
+  hand-tuned work had no history, no bisect and no rollback; the only restore point was a July copy of the
+  single file. This was ranked above every remaining feature.
+- **`.gitignore` excludes `_archive/`, `team-connect copy.html`, `tests/artifacts/` (15MB), `.claude/`,
+  `.gstack/`.** The legacy PRIME TIME copies stay on disk as restore points but are not published — they
+  also carried the real roster. Nothing was deleted.
+- **`Teams.SAMPLE_ROSTER` no longer contains real people.** It shipped 15 real colleague first names into
+  the built file. Replaced with demo names chosen to span the cultures the app is used by. Rule going
+  forward: real rosters are typed in or imported on the day and never live in the source. The reason is
+  written into the code as a comment so a future edit does not quietly undo it.
+- Verified the sanitised file **as published on GitHub**, not locally — a local grep proves nothing about
+  what actually shipped.
+- Pushing uses the `ahamshiva` gh account, not the default `agniora`; switched for the push and switched
+  back afterwards.
+- Removed eight stale `fail-*.png` sitting beside a passing `results.json`.
