@@ -1,0 +1,61 @@
+/* src/content/gibberish.js  Guess the Gibberish (Mad Gab) bank. Say the syllables fast until the phrase appears. */
+(function () {
+  "use strict";
+  const T = (text, answer, category, difficulty) => ({ text, answer, category, difficulty });
+  window.TCL.Content.registerBank("gibberish", [
+    /* ★ warmups: word boundaries mostly intact */
+    T("CAW FEE BRAKE", "Coffee break", "Office Life", 1),
+    T("BOO BULL TEA", "Bubble tea", "Food", 1),
+    T("HAH LOW HAH LOW", "Halo-halo", "Food", 1),
+    T("CHICK KEN AH DOE BOW", "Chicken adobo", "Food", 1),
+    T("JEEP KNEE RIDE", "Jeepney ride", "Travel", 1),
+    T("CAN GAH RUE", "Kangaroo", "Animals", 1),
+    T("BALL LEE WOOD DANCE", "Bollywood dance", "Everyday", 1),
+    T("WHY FIE PUSS WORD", "WiFi password", "Tech", 1),
+    T("SCREW EN SHARE", "Screen share", "Tech", 1),
+    T("SUN DAY BRUNCH", "Sunday brunch", "Everyday", 1),
+    T("TEE SHIRT AND JEANS", "T-shirt and jeans", "Everyday", 1),
+    T("YEW ARE ON MEWT", "You are on mute", "Office Life", 1),
+    /* ★★ boundaries start lying */
+    T("MICE CROWS OFT TEAMS", "Microsoft Teams", "Tech", 2),
+    T("CARRY OKAY KNIGHT", "Karaoke night", "Everyday", 2),
+    T("RIP LIE ALL", "Reply all", "Office Life", 2),
+    T("HIGH BRED WORK KING", "Hybrid working", "Office Life", 2),
+    T("OUTTA VOFF ICE", "Out of office", "Office Life", 2),
+    T("TACKS RITT URN", "Tax return", "Everyday", 2),
+    T("GOO DYE MITE", "G'day mate", "Australia", 2),
+    T("GRATE WALLA V CHY NAH", "Great Wall of China", "Travel", 2),
+    T("LOO NAR KNEE WHERE", "Lunar New Year", "Festivals", 2),
+    T("OUGHT TOE RICK SHOW", "Auto rickshaw", "Travel", 2),
+    T("MAN GO LASS SEA", "Mango lassi", "Food", 2),
+    T("CHECK INN BEER YAWN E", "Chicken biryani", "Food", 2),
+    T("SEEK RITZ ANTA", "Secret Santa", "Festivals", 2),
+    T("BORED INK PASS", "Boarding pass", "Travel", 2),
+    T("CRICK KIT WHIRLED CUP", "Cricket World Cup", "Sport", 2),
+    T("DIM SUMMON DAY", "Dim sum Monday", "Food", 2),
+    T("HAPPY BURST DAY", "Happy birthday", "Everyday", 2),
+    T("SIT KNEE HARBOUR BRIDGE", "Sydney Harbour Bridge", "Australia", 2),
+    T("LET SCAR CUE LATE", "Let's calculate", "Office Life", 2),
+    T("NOAH DEAD LINES", "No deadlines", "Office Life", 2),
+    T("BAY SICK KETTLE", "Basketball", "Sport", 2),
+    T("PASTA BEE LITTY", "Possibility", "Words", 2),
+    /* ★★★ brutal: real misleading words across wrong boundaries */
+    T("MUNDANE MOURNING MEATING", "Monday morning meeting", "Office Life", 3),
+    T("DEAD LYNX TEN SHUN", "Deadline extension", "Office Life", 3),
+    T("WERE CLIFF BAL ANTS", "Work-life balance", "Office Life", 3),
+    T("PER FOUR MINCE RIVE YOU", "Performance review", "Office Life", 3),
+    T("CANNES EYE HAVER EYES", "Can I have a rise?", "Office Life", 3),
+    T("AN EWE ALLEE V", "Annual leave", "Office Life", 3),
+    T("SOUP HER ANN YOU EH SHUN", "Superannuation", "Australia", 3),
+    T("ART A FISH LINT ELLIE JENTS", "Artificial intelligence", "Tech", 3),
+    T("GO RUM MASS ALLAH", "Garam masala", "Food", 3),
+    T("CUSTOM ERSE ATTIS FACTION", "Customer satisfaction", "Office Life", 3),
+    T("FEZ TIV ALL OFF LIGHTS", "Festival of lights", "Festivals", 3),
+    T("PACK IT SWITCH EYE PEE", "Packet switch IP", "Tech", 3),
+    T("KNOTS URE IFF EYE KNOW", "Not sure if I know", "Words", 3),
+    T("SHAKE SPEAR INN LOVE", "Shakespeare in love", "Pop Culture", 3),
+  ], [
+    { key: "text", label: "Gibberish (syllables)", type: "text", required: true },
+    { key: "answer", label: "Real phrase", type: "text", required: true },
+  ]);
+})();

@@ -1,0 +1,108 @@
+/* src/styles/presentation.css : participant-facing window (shared through Zoom) */
+.pres { --s: 1; position: relative; height: 100vh; display: flex; flex-direction: column; background: radial-gradient(1000px 600px at 85% -5%, rgba(232, 184, 75, .10), transparent 60%), radial-gradient(900px 700px at -10% 105%, rgba(94, 139, 255, .09), transparent 60%), var(--ink); color: var(--text); overflow: hidden; }
+.pres.large { --s: 1.22; }
+.pres-top { display: flex; align-items: center; justify-content: space-between; padding: calc(16px * var(--s)) calc(28px * var(--s)); border-bottom: 1px solid var(--line); gap: 16px; }
+.pres-top .brand { font-family: var(--font-display); font-weight: 700; font-size: calc(20px * var(--s)); letter-spacing: .02em; }
+.pres-top .brand span { color: var(--gold); }
+.pres-top .live { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: calc(11px * var(--s)); letter-spacing: .26em; text-transform: uppercase; color: var(--muted); }
+.pres-top .live::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--red); box-shadow: 0 0 10px var(--red); animation: blink 1.8s ease infinite; }
+@keyframes blink { 50% { opacity: .35; } }
+.pres-top .live.paused::before { background: var(--amber); box-shadow: none; animation: none; }
+.pres-body { flex: 1; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: calc(20px * var(--s)); padding: calc(20px * var(--s)) calc(28px * var(--s)); min-height: 0; }
+.pres-body.nosb { grid-template-columns: 1fr; }
+.pres-stage { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: calc(16px * var(--s)); min-width: 0; padding: calc(10px * var(--s)); }
+.pres-stage .eyebrow { font-size: calc(13px * var(--s)); letter-spacing: .3em; color: var(--gold); }
+.pres-stage .title { font-family: var(--font-display); font-weight: 700; font-size: calc(46px * var(--s)); line-height: 1.05; max-width: 22ch; }
+.pres-stage .prompt { font-family: var(--font-display); font-weight: 700; font-size: calc(40px * var(--s)); line-height: 1.18; max-width: 26ch; }
+.pres-stage .prompt.gib { color: var(--gold-2); letter-spacing: .05em; font-size: calc(52px * var(--s)); }
+.pres-stage .prompt.long { font-size: calc(30px * var(--s)); max-width: 34ch; }
+.pres-stage .text { font-size: calc(22px * var(--s)); color: var(--muted); max-width: 40ch; line-height: 1.4; }
+.pres-stage .answer { font-size: calc(30px * var(--s)); color: var(--green); font-weight: 700; background: rgba(35, 213, 171, .09); border: 1px solid rgba(35, 213, 171, .3); padding: calc(10px * var(--s)) calc(26px * var(--s)); border-radius: 14px; }
+.pres-stage .options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: calc(10px * var(--s)); width: min(100%, 900px); }
+.pres-stage .opt { border: 1px solid var(--line-strong); border-radius: 14px; padding: calc(12px * var(--s)) calc(16px * var(--s)); font-size: calc(22px * var(--s)); text-align: left; display: flex; gap: 12px; align-items: center; }
+.pres-stage .opt .k { font-family: var(--font-mono); color: var(--gold); }
+.pres-stage .opt.correct { border-color: var(--green); color: var(--green); }
+.pres-stage .banner { display: inline-flex; gap: 12px; align-items: center; flex-wrap: wrap; justify-content: center; border: 1px solid var(--line-strong); border-radius: 14px; padding: calc(10px * var(--s)) calc(20px * var(--s)); font-size: calc(22px * var(--s)); }
+.pres-stage .banner b { color: var(--tc, var(--gold)); }
+.pres-stage .instructions { text-align: left; list-style: none; counter-reset: s; display: flex; flex-direction: column; gap: calc(10px * var(--s)); font-size: calc(21px * var(--s)); max-width: 60ch; }
+.pres-stage .instructions li { counter-increment: s; display: flex; gap: 14px; align-items: flex-start; line-height: 1.35; }
+.pres-stage .instructions li::before { content: counter(s); font-family: var(--font-mono); color: var(--gold); border: 1px solid rgba(232, 184, 75, .45); border-radius: 50%; width: calc(28px * var(--s)); height: calc(28px * var(--s)); display: inline-flex; align-items: center; justify-content: center; font-size: calc(14px * var(--s)); flex: none; margin-top: 3px; }
+.pres-stage .ring { --frac: 1; --size: calc(150px * var(--s)); --hole: .72; position: relative; width: var(--size); height: var(--size); display: flex; align-items: center; justify-content: center; }
+.pres-stage .ring::before { content: ""; position: absolute; inset: 0; border-radius: 50%; background: conic-gradient(var(--gold) calc(var(--frac) * 1turn), rgba(246, 244, 239, .08) 0); -webkit-mask: radial-gradient(closest-side, transparent 72%, #000 73%); mask: radial-gradient(closest-side, transparent 72%, #000 73%); }
+.pres-stage .ring.low::before { background: conic-gradient(var(--red) calc(var(--frac) * 1turn), rgba(246, 244, 239, .08) 0); }
+.pres-stage .ring.low .t { color: var(--red); animation: pulse 1s infinite; }
+.pres-stage .ring.paused .t { color: var(--muted); }
+.pres-stage .ring .t { font-family: var(--font-mono); line-height: 1; letter-spacing: -.02em;
+  font-size: min(calc(46px * var(--s)), calc(var(--size) * var(--hole) * .94 / (var(--len, 5) * .6))); }
+.pres-stage .ring .lbl { position: absolute; bottom: calc(-24px * var(--s)); font-family: var(--font-mono); font-size: calc(11px * var(--s)); letter-spacing: .2em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+.pres-stage .image { background: #f6f4ef; border-radius: 16px; padding: 10px; max-width: min(100%, 720px); }
+.pres-stage .image svg { width: 100%; height: auto; max-height: 46vh; display: block; }
+.pres-stage .list { text-align: left; list-style: none; display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); width: min(100%, 900px); }
+.pres-stage .list li { border: 1px solid var(--line-strong); border-radius: 12px; padding: calc(10px * var(--s)) calc(14px * var(--s)); font-size: calc(20px * var(--s)); display: flex; gap: 10px; }
+.pres-stage .list li .n { font-family: var(--font-mono); color: var(--gold); }
+.pres-stage .teams { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; width: 100%; max-width: 1000px; }
+.pres-stage .teamcard { border: 1px solid var(--line); border-top: 4px solid var(--tc); border-radius: 14px; padding: 12px 14px; text-align: left; background: rgba(246, 244, 239, .03); }
+.pres-stage .teamcard .nm { font-family: var(--font-display); font-weight: 700; font-size: calc(20px * var(--s)); color: var(--tc); }
+.pres-stage .teamcard .mem { color: var(--muted); font-size: calc(15px * var(--s)); margin-top: 4px; line-height: 1.4; }
+.pres-stage .msgwall { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; width: 100%; max-width: 1100px; }
+.pres-stage .msg { border: 1px solid rgba(232, 184, 75, .3); border-radius: 14px; padding: 14px 16px; text-align: left; font-size: calc(18px * var(--s)); line-height: 1.4; background: rgba(232, 184, 75, .05); }
+.pres-stage .msg .from { color: var(--gold); font-size: calc(13px * var(--s)); font-family: var(--font-mono); margin-top: 8px; }
+.pres-stage .mask { font-size: calc(48px * var(--s)); letter-spacing: .1em; }
+.pres-sb { width: calc(240px * var(--s)); display: flex; flex-direction: column; gap: 8px; align-self: start; }
+.pres-sb h4 { font-family: var(--font-mono); font-size: calc(11px * var(--s)); letter-spacing: .24em; text-transform: uppercase; color: var(--muted); font-weight: 500; margin-bottom: 4px; }
+.pres-sb .row { display: flex; align-items: center; justify-content: space-between; gap: 8px; border-left: 4px solid var(--tc); background: rgba(246, 244, 239, .04); border-radius: 10px; padding: calc(8px * var(--s)) calc(10px * var(--s)); }
+.pres-sb .row .nm { font-weight: 700; font-size: calc(15px * var(--s)); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pres-sb .row .pts { font-family: var(--font-mono); font-size: calc(20px * var(--s)); color: var(--tc); }
+.pres-sb .row.leader { box-shadow: 0 0 20px rgba(232, 184, 75, .15); }
+.pres-sb .row.pop { animation: scorePop .5s ease; }
+.pres-final .podium { margin: 10px 0; }
+.pres-final .podium .spot { width: calc(220px * var(--s)); }
+.pres-final .podium .tname { font-size: calc(24px * var(--s)); }
+.pres-final .podium .tpts { font-size: calc(30px * var(--s)); }
+.pres-foot { padding: calc(10px * var(--s)) calc(28px * var(--s)); border-top: 1px solid var(--line); color: var(--dim); font-size: calc(12px * var(--s)); display: flex; justify-content: space-between; }
+.pres-wait { text-align: center; padding: 60px 20px; color: var(--muted); }
+@media (max-width: 900px) { .pres-body { grid-template-columns: 1fr; } .pres-sb { width: 100%; } .pres-stage .title { font-size: 34px; } .pres-stage .prompt { font-size: 28px; } }
+
+/* Rehearsal watermark: unmistakable on a shared screen, never on a live session. */
+.pres-rehearsal { position: absolute; top: 0; left: 0; right: 0; z-index: 5; text-align: center;
+  font-family: var(--font-mono, monospace); font-size: calc(13px * var(--s, 1)); letter-spacing: .3em;
+  padding: 6px 0; background: rgba(94, 139, 255, .9); color: #05070f; font-weight: 700; }
+.pres.rehearsing { outline: 4px dashed rgba(94, 139, 255, .8); outline-offset: -4px; }
+.pres.rehearsing .pres-top { margin-top: calc(26px * var(--s, 1)); }
+.pres .shared-wrap { display: flex; flex-direction: column; gap: calc(18px * var(--s, 1)); align-items: center; width: 100%; }
+.pres .shared-tiles { display: flex; gap: calc(20px * var(--s, 1)); flex-wrap: wrap; justify-content: center; }
+.pres .shared-tiles .tile { border: 2px solid rgba(246, 244, 239, .18); border-radius: 18px; padding: calc(18px * var(--s, 1)) calc(28px * var(--s, 1)); text-align: center; }
+.pres .shared-tiles .tile .n { display: block; font-family: var(--font-display, serif); font-size: calc(56px * var(--s, 1)); font-weight: 700; color: var(--gold-2, #f4d06f); line-height: 1; }
+.pres .shared-tiles .tile .k { display: block; margin-top: calc(6px * var(--s, 1)); font-size: calc(15px * var(--s, 1)); opacity: .75; }
+
+/* Holding screen: calm, large, nothing else on it. */
+.pres-holding { text-align: center; gap: calc(14px * var(--s, 1)); }
+.pres-holding .title { font-size: calc(58px * var(--s, 1)); }
+.pres-holding .text { opacity: .8; }
+.hold-dots { display: flex; gap: calc(10px * var(--s, 1)); margin-top: calc(18px * var(--s, 1)); }
+.hold-dots span { width: calc(11px * var(--s, 1)); height: calc(11px * var(--s, 1)); border-radius: 50%; background: var(--gold, #e8b84b); opacity: .35; animation: holdPulse 1.4s infinite; }
+.hold-dots span:nth-child(2) { animation-delay: .2s; }
+.hold-dots span:nth-child(3) { animation-delay: .4s; }
+@keyframes holdPulse { 0%, 100% { opacity: .25; } 50% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .hold-dots span { animation: none; opacity: .5; } }
+
+/* The ring's label is positioned outside its box, so reserve exactly that much and no more.
+   Bulk padding here pushes a tall question off the bottom of a 720p share. */
+.pres-body { align-items: stretch; min-height: 0; padding-bottom: calc(38px * var(--s)); }
+/* The participant window is a fixed frame: the footer never moves and the page never
+   scrolls, so a long question shrinks to fit rather than pushing the clock off the screen. */
+/* The ring's label is absolutely positioned below the ring, so the stage keeps padding for
+   it: clipping the overflow without that padding swallows the label. */
+.pres-stage { min-height: 0; overflow: hidden; gap: calc(12px * var(--s)); padding-bottom: calc(30px * var(--s)); }
+.pres-stage .prompt { font-size: min(calc(40px * var(--s)), 5.2vh); }
+.pres-stage .prompt.long { font-size: min(calc(30px * var(--s)), 4vh); }
+.pres-stage .prompt.gib { font-size: min(calc(52px * var(--s)), 7vh); }
+.pres-stage .title { font-size: min(calc(46px * var(--s)), 6.4vh); }
+.pres-stage .text { font-size: min(calc(22px * var(--s)), 3vh); }
+.pres-stage .options { font-size: min(1rem, 2.6vh); }
+.pres-stage > .ring { margin-bottom: calc(26px * var(--s)); }
+.pres-foot { flex: none; }
+/* A consistent rhythm between blocks, with a little more air around the prompt so the
+   question is clearly its own thing rather than one line among several. */
+.pres-stage > .prompt { margin: calc(6px * var(--s)) 0; }
+.pres-stage > .banner + .prompt { margin-top: calc(2px * var(--s)); }
