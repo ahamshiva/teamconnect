@@ -622,3 +622,18 @@ inside the ring.
 - **The banks were in better shape than assumed.** Hedged origins, myths actively debunked, and notes
   pre-empting the obvious objections. Worth trusting more than a fresh bank, and worth copying the
   posture when writing new items: hedge what is uncertain, and note the objection you expect.
+
+## 2026-09-04 — No folder called games
+- **`src/games/` is now `src/activities/`, and the project folder is `team_connect/`.** This runs on an
+  office machine; a folder named "games" in a work directory or a file scan is the wrong thing to have.
+- **The rename matched the product's existing vocabulary rather than inventing a cover word.** The UI has
+  always said "activities". A euphemism nobody uses would have been worse than the original.
+- **Identifiers were NOT renamed.** `gameId` is persisted in every saved session and exported backup, so
+  renaming it breaks real sessions to change something no user ever sees. Rename what is visible in the
+  filesystem; leave what is written into saved data.
+- **A rename is not done when the folder moves.** The manifest, 18 file headers, the schema doc, the
+  global workspace table and the Claude memory directory (keyed by project path) all pointed at the old
+  name. The memory directory in particular would have silently orphaned every note for this project.
+- **Left alone on purpose:** UI wording ("Game Library", "Jump to a game") is a visible product change
+  and the user's call, and the `games` folders inside the unrelated `teamweft` client site are not part
+  of what runs in the office.

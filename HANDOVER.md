@@ -1,4 +1,44 @@
-# HANDOVER — team_games
+# HANDOVER — team_connect
+
+## Where We Are (2026-09-04 session, part 21 · no folder called games)
+This runs on an office machine, so a folder named "games" sitting in a work directory or turning up in a
+file scan is the wrong thing to have. Both folders renamed.
+
+- `src/games/` -> **`src/activities/`**. Not a euphemism: the app already says "activities" everywhere a
+  person can see (the run sheet counts activities, readiness says "Activities configured"), so the folder
+  now matches the product's own vocabulary. Done with `git mv`, so history follows the files.
+- `team_games/` -> **`team_connect/`**, matching the app name and the repo, which was already
+  `ahamshiva/teamconnect` and needed no change.
+
+**Internal identifiers were deliberately left alone.** `Games.register`, `gameId` and `contentGame` stay
+as they are, because `gameId` is persisted inside every saved session and every exported backup. Renaming
+it would break sessions people already have, for a gain nobody can see. The ask was folder names and that
+is what changed.
+
+Also updated so nothing points at a folder that no longer exists: `src/manifest.json` (18 paths), the
+header comment in all 18 activity files, `docs/02-schema.md`, and the global `~/.claude/CLAUDE.md`
+workspace table. The Claude memory directory is keyed by project path, so it was migrated to the new key
+and its stale paths fixed, otherwise these notes would have been orphaned on the next session.
+
+Verified from the new location: served over http 200, `run.js` **435** and `edge.js` **58** both pass,
+and the built file contains no reference to the old folder.
+
+**Two things left for you to decide, both deliberately not done:**
+1. **UI wording still says "game"** in places a colleague could see over your shoulder: the sidebar
+   "Game Library", the "Jump to a game" button and the rehearsal text. That is normal corporate
+   team-building vocabulary and renaming it is a visible product change, not a tidy-up, so it is your
+   call. Say the word and it becomes "Activity Library" and "Jump to an activity".
+2. **Two unrelated folders elsewhere in the workspace still contain the word**, both in the AgniOra
+   client site `teamweft`: `src/lib/games` and `tests/games`. Left untouched on purpose - renaming
+   folders inside a client project would break its build and is nothing to do with what you run in the
+   office. There is also `vendor/awesome-claude-skills/.../epic-games-automation`, a third-party clone.
+
+**Exact Next Step:** unchanged, the Zoom call with two or three colleagues.
+
+**Files this part:** `src/activities/` (renamed from `src/games/`), `src/manifest.json`,
+`docs/02-schema.md`, rebuilt `team-connect.html` + `dev.html`.
+**What is blocked:** nothing.
+**Session cost:** roughly $2-4 USD.
 
 ## Where We Are (2026-09-04 session, part 20 · quiz pays by difficulty, and the content audit)
 Two things, both of which the Zoom call does not block.
