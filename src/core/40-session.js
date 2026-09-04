@@ -106,7 +106,16 @@
     TCL.persist();
     return copy;
   };
-  Session.touch = function () { const s = TCL.session(); if (s) s.updatedAt = new Date().toISOString(); TCL.persist(); };
+  /* Any edit to the session has to reach the participant window, which now shows team rosters:
+     rebalancing teams while it displays the old ones is worse than showing nothing. push()
+     rebuilds the public payload and no-ops when it is unchanged, so this stays cheap.
+     Deliberately not an emit("session:changed"): that also re-renders the console, and most
+     callers render themselves straight after, which would double-render over live inputs. */
+  Session.touch = function () {
+    const s = TCL.session(); if (s) s.updatedAt = new Date().toISOString();
+    TCL.persist();
+    if (s && TCL.Presenter && TCL.Presenter.push) TCL.Presenter.push();
+  };
   Session.unfinished = function () { return TCL.state.sessions.filter(s => s.status === "live"); };
 
   /* ---------- run sheet ---------- */
