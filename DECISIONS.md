@@ -637,3 +637,20 @@ inside the ring.
 - **Left alone on purpose:** UI wording ("Game Library", "Jump to a game") is a visible product change
   and the user's call, and the `games` folders inside the unrelated `teamweft` client site are not part
   of what runs in the office.
+
+## 2026-09-04 — Final end-to-end and edge pass
+- **Recycled content is now announced.** Running out of fresh questions was handled gracefully in the
+  data layer and invisibly in the UI. Graceful degradation still needs to be *said*, or the room finds
+  out before the facilitator does.
+- **The fix was reading a value that already existed.** `select()` had returned `toppedUp` since it was
+  written and no caller ever read it. Before adding a mechanism, check whether the codebase already
+  computes the thing and discards it - this is the second time today (the `teams` block was the first).
+- **A change that halves a resource brings forward every problem that depends on it.** The difficulty
+  floor made content recycling arrive twice as fast. Worth asking, after any change like that, what else
+  measured itself against the old size.
+- **Verified rather than assumed**, in both directions: the quiz "leak" was the multiple-choice answer
+  appearing as one of its own options (not a leak), and the localStorage reset that appeared to fail was
+  the beforeunload autosave doing its job (not a bug).
+- **Not defects, recorded for the next session:** clearing localStorage does not reset the app while a
+  tab is open; Indic and CJK glyphs render lighter than Latin at the same size and are the weakest text
+  under Zoom compression.

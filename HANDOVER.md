@@ -1,5 +1,52 @@
 # HANDOVER — team_connect
 
+## Where We Are (2026-09-04 session, part 22 · final end-to-end and edge pass)
+A full sweep before the Zoom call: every activity driven, deliberate edge cases, and a complete session
+played through the real UI from the wizard to the podium. **One real defect found and fixed. Zero runtime
+errors anywhere.**
+
+**The defect: a returning team would have started seeing repeat questions with no warning.** Content
+never runs out, it recycles - `select()` tops up from already-played items rather than failing, which is
+the right behaviour. But nothing told the facilitator it had begun. Replaying the same quiz proved it: on
+run 6, **5 of 10 questions were repeats**, on run 7 **all 10 were**, and readiness said "ok" every time.
+The signal already existed and was being thrown away: `select()` returned `toppedUp` and no caller read
+it. Readiness now passes `unusedOnly` through, says how many new items are left and uses the word
+"repeat". Raising the difficulty floor earlier today halved every bank, so this arrives about twice as
+fast as it used to, which is what made it worth fixing now rather than later. Suite 435 -> **440**.
+
+**What was checked and is sound:**
+- **All 17 activities** started, rendered participant blocks and completed. No runtime errors, no leaks.
+- **No private answer crosses to the participant window.** The one flagged case was the quiz, where the
+  correct answer legitimately appears as one of four options; confirmed there is no `answer` block before
+  reveal and the text appears nowhere outside the options array.
+- **Unicode and long names**: Telugu, Chinese, Vietnamese and Devanagari names store and render intact,
+  no mojibake, and a 37-character hyphenated name wraps cleanly on a roster card at 720p with no overflow.
+- **Small and odd sessions**: two people works with no blockers; one person is correctly blocked at the
+  teams check rather than crashing; individual mode shows no roster and ranks people instead.
+- **Timers**: start, extend, pause, resume, stop all transition correctly and every remaining value stays
+  finite.
+- **All-zero finale** degrades to "Thank you for playing. See you next time." instead of an empty podium.
+- **Backup round trip**: 27 sessions and 149 usage records exported and restored identically.
+- **Full playthrough**: wizard, readiness gate (which genuinely gates), presentation connect, five
+  activities, scoring, and a correct podium with the winner centre and tallest.
+
+**Worth knowing, not defects:** clearing `localStorage` and reloading does not reset the app, because the
+`beforeunload` autosave writes the in-memory state straight back. Reset via `TCL.state =
+TCL.Store.defaults(); TCL.persistNow()`. Indic and CJK glyphs render slightly lighter than Latin at the
+same size, which is font fallback; it is the weakest text on the participant screen under Zoom
+compression.
+
+**Exact Next Step: the Zoom call.** Everything a machine can check has now been checked. What remains is
+entirely about people: whether Balanced scoring sounds fair read aloud, whether a difficulty floor of 2
+lands as "not easy" or "nobody knows", whether the roster cards survive Zoom's compression, and whether
+turns feel fair or slow with this particular group.
+
+**Files this part:** `src/core/{32-content,36-readiness}.js`, `tests/run.js`, rebuilt `team-connect.html`
++ `dev.html`.
+**Suites:** `run.js` **440** · `edge.js` **58**, both pass.
+**What is blocked:** nothing.
+**Session cost:** roughly $6-9 USD.
+
 ## Where We Are (2026-09-04 session, part 21 · no folder called games)
 This runs on an office machine, so a folder named "games" sitting in a work directory or turning up in a
 file scan is the wrong thing to have. Both folders renamed.
