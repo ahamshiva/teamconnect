@@ -1,4 +1,4 @@
-/* src/games/wronganswers.js  Wrong Answers Only: funniest wrong answer wins, then the real answer lands. */
+/* src/activities/wronganswers.js  Wrong Answers Only: funniest wrong answer wins, then the real answer lands. */
 (function () {
   "use strict";
   const TCL = window.TCL, U = TCL.util, esc = U.esc, UI = TCL.UI, K = TCL.GameKit, f = K.f;

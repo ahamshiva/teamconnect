@@ -1,4 +1,4 @@
-/* src/games/draw.js  Draw and Describe. */
+/* src/activities/draw.js  Draw and Describe. */
 (function () {
   "use strict";
   const TCL = window.TCL, U = TCL.util, esc = U.esc, UI = TCL.UI, K = TCL.GameKit, f = K.f;

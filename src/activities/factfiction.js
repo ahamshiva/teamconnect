@@ -1,4 +1,4 @@
-/* src/games/factfiction.js  Fact or Fiction: teams vote true or false, then hear the real story. */
+/* src/activities/factfiction.js  Fact or Fiction: teams vote true or false, then hear the real story. */
 (function () {
   "use strict";
   const TCL = window.TCL, U = TCL.util, esc = U.esc, UI = TCL.UI, K = TCL.GameKit, f = K.f;

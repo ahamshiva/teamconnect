@@ -1,4 +1,4 @@
-/* src/games/appreciation.js  Appreciation Wall (unscored). */
+/* src/activities/appreciation.js  Appreciation Wall (unscored). */
 (function () {
   "use strict";
   const TCL = window.TCL, U = TCL.util, esc = U.esc, UI = TCL.UI, K = TCL.GameKit, f = K.f;

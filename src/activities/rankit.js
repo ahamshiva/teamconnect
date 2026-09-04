@@ -1,4 +1,4 @@
-/* src/games/rankit.js  Rank It Together. */
+/* src/activities/rankit.js  Rank It Together. */
 (function () {
   "use strict";
   const TCL = window.TCL, U = TCL.util, esc = U.esc, UI = TCL.UI, K = TCL.GameKit, f = K.f;

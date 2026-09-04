@@ -1,4 +1,4 @@
-/* src/games/quiz.js  Rapid-Fire Quiz. */
+/* src/activities/quiz.js  Rapid-Fire Quiz. */
 (function () {
   "use strict";
   const TCL = window.TCL, U = TCL.util, esc = U.esc, UI = TCL.UI, K = TCL.GameKit, f = K.f;

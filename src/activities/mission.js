@@ -1,4 +1,4 @@
-/* src/games/mission.js  Team Mission: distributed clues, one shared puzzle. */
+/* src/activities/mission.js  Team Mission: distributed clues, one shared puzzle. */
 (function () {
   "use strict";
   const TCL = window.TCL, U = TCL.util, esc = U.esc, UI = TCL.UI, K = TCL.GameKit, f = K.f;

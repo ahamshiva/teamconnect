@@ -1,4 +1,4 @@
-/* src/games/fivesec.js  Five-Second Frenzy. */
+/* src/activities/fivesec.js  Five-Second Frenzy. */
 (function () {
   "use strict";
   const TCL = window.TCL, U = TCL.util, esc = U.esc, UI = TCL.UI, K = TCL.GameKit, f = K.f;

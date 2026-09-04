@@ -1,4 +1,4 @@
-/* src/games/gibberish.js  Guess the Gibberish. */
+/* src/activities/gibberish.js  Guess the Gibberish. */
 (function () {
   "use strict";
   const TCL = window.TCL, U = TCL.util, esc = U.esc, UI = TCL.UI, K = TCL.GameKit, f = K.f;

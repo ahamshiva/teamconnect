@@ -1,4 +1,4 @@
-/* src/games/commonground.js  Common Ground: breakout rooms, find unusual similarities. */
+/* src/activities/commonground.js  Common Ground: breakout rooms, find unusual similarities. */
 (function () {
   "use strict";
   const TCL = window.TCL, U = TCL.util, esc = U.esc, UI = TCL.UI, K = TCL.GameKit, f = K.f;

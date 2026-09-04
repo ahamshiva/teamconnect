@@ -1,4 +1,4 @@
-/* src/games/charades.js  Reverse Charades: the guesser looks away, the team acts. */
+/* src/activities/charades.js  Reverse Charades: the guesser looks away, the team acts. */
 (function () {
   "use strict";
   const TCL = window.TCL, U = TCL.util, esc = U.esc, UI = TCL.UI, K = TCL.GameKit, f = K.f;

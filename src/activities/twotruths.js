@@ -1,4 +1,4 @@
-/* src/games/twotruths.js  Two Truths and a Lie. */
+/* src/activities/twotruths.js  Two Truths and a Lie. */
 (function () {
   "use strict";
   const TCL = window.TCL, U = TCL.util, esc = U.esc, UI = TCL.UI, K = TCL.GameKit, f = K.f;

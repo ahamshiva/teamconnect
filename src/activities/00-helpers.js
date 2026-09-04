@@ -1,4 +1,4 @@
-/* src/games/00-helpers.js  Shared building blocks for game plugins (schema fields, deck engine, console widgets). */
+/* src/activities/00-helpers.js  Shared building blocks for game plugins (schema fields, deck engine, console widgets). */
 (function () {
   "use strict";
   const TCL = window.TCL, U = TCL.util, esc = U.esc, UI = TCL.UI;

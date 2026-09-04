@@ -1,4 +1,4 @@
-/* src/games/wyr.js  Would You Rather? */
+/* src/activities/wyr.js  Would You Rather? */
 (function () {
   "use strict";
   const TCL = window.TCL, U = TCL.util, esc = U.esc, UI = TCL.UI, K = TCL.GameKit, f = K.f;

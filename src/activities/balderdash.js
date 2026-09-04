@@ -1,4 +1,4 @@
-/* src/games/balderdash.js  Fake Definitions (Balderdash style). */
+/* src/activities/balderdash.js  Fake Definitions (Balderdash style). */
 (function () {
   "use strict";
   const TCL = window.TCL, U = TCL.util, esc = U.esc, UI = TCL.UI, K = TCL.GameKit, f = K.f;

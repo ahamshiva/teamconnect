@@ -1,4 +1,4 @@
-/* src/games/whosaid.js  Who Said That? Anonymous facts, teams guess the person. */
+/* src/activities/whosaid.js  Who Said That? Anonymous facts, teams guess the person. */
 (function () {
   "use strict";
   const TCL = window.TCL, U = TCL.util, esc = U.esc, UI = TCL.UI, K = TCL.GameKit, f = K.f;

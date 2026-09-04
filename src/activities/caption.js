@@ -1,4 +1,4 @@
-/* src/games/caption.js  Caption This. */
+/* src/activities/caption.js  Caption This. */
 (function () {
   "use strict";
   const TCL = window.TCL, U = TCL.util, esc = U.esc, UI = TCL.UI, K = TCL.GameKit, f = K.f;

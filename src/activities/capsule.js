@@ -1,4 +1,4 @@
-/* src/games/capsule.js  Team Time Capsule. */
+/* src/activities/capsule.js  Team Time Capsule. */
 (function () {
   "use strict";
   const TCL = window.TCL, U = TCL.util, esc = U.esc, UI = TCL.UI, K = TCL.GameKit, f = K.f;

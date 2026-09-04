@@ -64,5 +64,5 @@ hotkeys { key: action | {action, arg} }, actionLabels {}, noUndo []
 score(targetId, points, reason, round), scored(targetId, reason, round), events(), timer, breakout, content(query),
 rotate(key), rotateTeam(team, key), name(pid), teamOf(pid), targetOf(pid), log(label)`.
 
-Shared helpers in `src/games/00-helpers.js` (`TCL.GameKit`): schema field factories, the content deck engine
+Shared helpers in `src/activities/00-helpers.js` (`TCL.GameKit`): schema field factories, the content deck engine
 (next/prev/skip/replace/reveal/hide), award rows with double-click and repeat guards, banners, copy boxes, estimates.
