@@ -24,7 +24,10 @@ async function section(name, fn) { current = name; process.stdout.write("• " +
   await page.reload();
   await page.waitForSelector("#app .hero");
   const run = fn => page.evaluate(fn);
-  const reset = () => page.evaluate(() => { TCL.state.sessions = []; TCL.state.currentSessionId = null; TCL.persistNow(); });
+  /* Sessions AND custom content. The hostile-text section adds a quiz item whose question text is its
+     own answer, and it used to survive into every later section: a random draw would land on it and the
+     leak check would see the "answer" inside its own question. One section must not poison the next. */
+  const reset = () => page.evaluate(() => { TCL.state.sessions = []; TCL.state.currentSessionId = null; TCL.state.content.custom = []; TCL.state.content.usage = {}; TCL.persistNow(); });
 
   await section("hostile text: names and content are escaped everywhere", async () => {
     const r = await run(() => {
@@ -282,9 +285,15 @@ async function section(name, fn) { current = name; process.stdout.write("• " +
       oa.settings.count = 1; oa.settings.format = "open";
       TCL.Runner.start(oa.id);
       const oaItem = TCL.Runner.ctx().state.items[0];
-      const beforeReveal = JSON.stringify(TCL.Presenter.buildPayload()).indexOf(oaItem.answer) >= 0;
+      /* Match on the blocks the stage actually renders, not on the whole payload. The payload also
+         carries the tagline "One team. Any location.", so a one-word answer like "One" collided with
+         it and the check went off at random. A sloppy match can hide a real leak as easily as it can
+         invent one, so this looks at the blocks and at the answer block by type. */
+      const stageText = p => (p.blocks || []).map(b => [b.text, b.prompt, (b.options || []).join(" ")].filter(Boolean).join(" ")).join(" ");
+      const hasAnswerBlock = p => (p.blocks || []).some(b => b.type === "answer" && String(b.text || "").indexOf(oaItem.answer) >= 0);
+      const beforeReveal = stageText(TCL.Presenter.buildPayload()).indexOf(oaItem.answer) >= 0;
       TCL.Runner.act("reveal");
-      const afterReveal = JSON.stringify(TCL.Presenter.buildPayload()).indexOf(oaItem.answer) >= 0;
+      const afterReveal = hasAnswerBlock(TCL.Presenter.buildPayload());
       TCL.Runner.completeAndDiscard();
       TCL.Session.removeActivity(oa.id);
       if (beforeReveal) leaks.push("open-answer quiz leaks before the reveal");

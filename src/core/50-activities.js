@@ -1,4 +1,4 @@
-/* src/core/50-games.js
+/* src/core/50-activities.js
    Game registry + Runner (activity lifecycle, ctx, actions, exits, timers). */
 (function () {
   "use strict";
