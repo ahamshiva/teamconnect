@@ -239,6 +239,10 @@ async function seedSession(page, opts) {
     await shot(page, "04-console-quiz");
     let payload = await page.evaluate(() => TCL.Presenter.buildPayload());
     const answer = await page.evaluate(() => TCL.Runner.ctx().state.items[0].answer);
+    /* The quiz pays by difficulty, so the expected award is the question's own worth plus the
+       bonus, not a flat number. Asserting the relationship survives a change to the point table. */
+    const worth = await page.evaluate(() => { const c = TCL.Runner.ctx(); return TCL.GameKit.pointsFor(c.settings, TCL.GameKit.current(c.state)); });
+    const bonusPts = await page.evaluate(() => TCL.Runner.ctx().settings.speedBonusPoints);
     ok(!JSON.stringify(payload.blocks).includes('"answer"'), "no answer block before reveal");
     ok(!payload.blocks.some(b => b.type === "answer"), "answer not in presentation before reveal");
     ok(payload.timers.round && payload.timers.round.status === "running", "round timer running and described to presentation");
@@ -246,7 +250,7 @@ async function seedSession(page, opts) {
     await btn.click();
     await page.evaluate(() => new Promise(r => setTimeout(r, 50)));
     const afterOne = await page.evaluate(() => TCL.Scoring.standings()[0].raw);
-    ok(afterOne === 15, "award gives 10 for the answer plus the 5-point speed bonus while the clock is early (" + afterOne + ")");
+    ok(afterOne === worth + bonusPts, "award gives the question's " + worth + " plus the " + bonusPts + "-point speed bonus while the clock is early (" + afterOne + ")");
     /* double-click guard: the button is disabled after click and re-rendered as done */
     const disabled = await page.$eval(".award-grid .btn.team", b => b.disabled);
     ok(disabled, "awarded button disabled against repeat clicks");
@@ -259,7 +263,7 @@ async function seedSession(page, opts) {
     ok(afterUndo === 0, "undo removes the award (" + afterUndo + ")");
     await menuClick(page, "[data-redo]");
     const afterRedo = await page.evaluate(() => TCL.Scoring.standings()[0].raw);
-    ok(afterRedo === 15, "redo restores the award (" + afterRedo + ")");
+    ok(afterRedo === worth + bonusPts, "redo restores the award (" + afterRedo + ")");
     await page.keyboard.press("n");
     const idx = await page.evaluate(() => TCL.Runner.current().state.index);
     ok(idx === 1, "N key advances (" + idx + ")");
@@ -1538,8 +1542,8 @@ async function seedSession(page, opts) {
       return out;
     });
     ok(r.order[0] && r.order[1] && r.order[0] !== r.order[1], "a miss hands the question to the next team: " + r.order.slice(0, 2).join(" -> "));
-    ok(r.worth[0] === 10 && r.worth[1] === 5, "a passed-on question is worth half by default: " + JSON.stringify(r.worth));
-    ok(r.scored === 5 && r.scorerWasSecond, "the team it was passed to scores the reduced value (" + r.scored + ")");
+    ok(r.worth[0] > 0 && r.worth[1] === Math.round(r.worth[0] / 2), "a passed-on question is worth half by default: " + JSON.stringify(r.worth));
+    ok(r.scored === r.worth[1] && r.scorerWasSecond, "the team it was passed to scores the reduced value (" + r.scored + " of " + r.worth[0] + ")");
     ok(r.order[2] !== r.order[0] && r.order[3] !== r.order[2], "the team going first rotates with each question: " + r.order.join(" -> "));
     ok(r.allTried && r.revealedWhenExhausted && r.loops <= 4, "once every team has tried it reveals instead of looping: " + JSON.stringify({ loops: r.loops }));
     ok(r.presentationBanner && r.names.some(n => r.presentationBanner.indexOf(n) === 0), "the room is told whose turn it is: " + r.presentationBanner);
@@ -1581,7 +1585,9 @@ async function seedSession(page, opts) {
     });
     ok(r.on === true, "the speed bonus is on by default for the quiz");
     ok(r.full === 6 && r.mid === 3 && r.late === 0, "tiered: full, then half, then nothing: " + JSON.stringify([r.full, r.mid, r.late]));
-    ok(r.reasons.join(",") === "correct:10,speed bonus:6", "the bonus is its own score event, so it can be undone on its own: " + r.reasons.join(", "));
+    /* The question's own worth varies with difficulty now, so assert the shape: two separate
+       events, the bonus recorded on its own so it can be undone without the answer. */
+    ok(r.reasons.length === 2 && /^correct:\d+$/.test(r.reasons[0]) && r.reasons[1] === "speed bonus:" + r.full, "the bonus is its own score event, so it can be undone on its own: " + r.reasons.join(", "));
     ok(r.passedReasons.indexOf("speed bonus") < 0, "no speed bonus once a question has been passed on: " + JSON.stringify(r.passedReasons));
     ok(r.halfMode.early === 6 && r.halfMode.justPast === 0, "half mode is flat and still works: " + JSON.stringify(r.halfMode));
     /* Regressions for defects found in the edge sweep. */

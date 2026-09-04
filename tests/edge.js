@@ -392,6 +392,9 @@ async function section(name, fn) { current = name; process.stdout.write("• " +
       out.offers = TCL.GameKit.turnOffers(ctx);
       ctx.state.passed = true;
       out.passValue = TCL.GameKit.turnValue(ctx, 10);
+      /* The quiz pays by difficulty, so what a passed question is actually worth depends on the
+         item drawn. Capture it rather than assuming a flat ten. */
+      out.worth = TCL.GameKit.pointsFor(ctx.settings, TCL.GameKit.current(ctx.state));
       out.bonus = TCL.GameKit.speedBonus(ctx).points;
       let n = 0; while (!TCL.Runner.ctx().state.allTried && n < 40) { TCL.Runner.act("pass"); n++; }
       out.passes = n;
@@ -416,7 +419,7 @@ async function section(name, fn) { current = name; process.stdout.write("• " +
     ok(r.offers === 3 && !Number.isNaN(r.offers), 'a passLimit of "two" falls back to the default cap rather than removing it: ' + r.offers);
     ok(r.passes === r.offers && r.passes < 15, "so a question is exhausted after the capped number of offers rather than going round all fifteen (" + r.passes + " of 15)");
     ok(r.passValue === 5, 'a passPercent of "fifty" falls back to 50%, not to NaN: ' + r.passValue);
-    ok(r.awarded.length === 1 && r.awarded[0] === 5, "a correct answer still scores rather than silently awarding zero: " + JSON.stringify(r.awarded));
+    ok(r.awarded.length === 1 && r.awarded[0] === Math.round(r.worth / 2) && r.awarded[0] > 0, "a correct answer still scores rather than silently awarding zero: " + JSON.stringify(r.awarded) + " (half of " + r.worth + ")");
     ok(isFinite(r.bonus) && r.bonus === 5, "a nonsense speed-bonus value falls back to the game's own default rather than NaN (" + r.bonus + ")");
     ok(isFinite(r.fivesecEstimate) && r.fivesecEstimate > 0, "a junk seconds value does not make an estimate NaN: " + r.fivesecEstimate);
     ok(isFinite(r.runSheetTotal) && r.totalStillFinite, "one corrupted activity cannot make the whole run-sheet estimate NaN: " + r.runSheetTotal);
