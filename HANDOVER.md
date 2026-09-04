@@ -1,5 +1,43 @@
 # HANDOVER — team_connect
 
+## Where We Are (2026-09-04 session, part 24 · last path renamed, flake chased down, guide written)
+Three things, and the middle one was the only real work.
+
+**`src/core/50-games.js` -> `src/core/50-activities.js`.** The last path in the repo carrying the word.
+No tracked file or folder is named that way now. Identifiers still are, deliberately, because `gameId`
+is written into every saved session and backup.
+
+**The rename surfaced an intermittent failure in the leak guard, about 1 run in 15, and it was worth
+chasing.** "Does an answer reach the participant screen early" is the one test whose false confidence
+would be worst, so a flake there is not something to shrug at. **Two causes, neither an app defect:**
+
+1. **Test pollution.** The hostile-text section adds a quiz item whose question text *is* its answer (an
+   XSS fixture) and `reset()` only cleared sessions, so it survived into every later section. A random
+   draw would land on it and the guard saw the answer inside its own question. `reset()` now clears
+   custom content and usage too, so one section can no longer poison the next.
+2. **Substring matching.** The check searched the whole payload JSON, which carries the tagline "One
+   team. Any location.", so the one-word answer "One" matched it. It now reads the rendered blocks and
+   looks for an `answer` block by type, which is *stricter*: a sloppy match hides a real leak as easily
+   as it invents one.
+
+Evidence the app itself never leaked: all 84 quiz items checked individually, plus 300 random draws,
+produced zero pre-reveal exposures. 25 consecutive edge runs now pass where it used to fail about 1 in 15.
+
+**`HOW-TO-RUN.md`** is the run of show: a week before, the day before, ten minutes before, during, when
+it ends, and what to do when something goes wrong. Written for the facilitator on the day rather than
+for a developer, and linked from the top of the README. Every command in it was executed to confirm it
+works, and the `./serve.sh` URL was curled for a 200.
+
+**Final state: suites 440 and 58, both green and stable. Boots clean over http and file://, 17
+activities, 618 content items, no console errors. Working tree clean, local and GitHub identical.**
+
+**Exact Next Step: run it with people.** Nothing is left that a machine can check.
+
+**Files this part:** `src/core/50-activities.js` (renamed), `src/manifest.json`, `tests/edge.js`,
+`HOW-TO-RUN.md` (new), `README.md`, rebuilt `team-connect.html` + `dev.html`.
+**What is blocked:** nothing.
+**Session cost:** roughly $5-8 USD.
+
 ## Where We Are (2026-09-04 session, part 23 · the questions are now fun, not just true)
 Venkat asked whether the questions are engaging and funny. The fact audit had only established that they
 are *true*. Measured the other axis with a proxy: does an item give the facilitator a payoff line to say

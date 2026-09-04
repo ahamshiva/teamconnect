@@ -7,6 +7,9 @@ One person facilitates from `team-connect.html`; participants join through Zoom 
 reactions and breakout rooms. The app never controls Zoom; it tells the facilitator what to do and shows
 participants a clean, answer-free screen.
 
+> **Running a session for real?** Read **[HOW-TO-RUN.md](HOW-TO-RUN.md)**. It is the run of show:
+> what to do a week before, ten minutes before, during, and when something goes wrong.
+
 ## Run it
 
 1. Copy `team-connect.html` anywhere (USB, email, another laptop). It is one self-contained file with no dependencies.

@@ -667,3 +667,21 @@ inside the ring.
 - **Formats carry more of the fun than items do.** Gibberish, five-second and would-you-rather are strong
   because the format manufactures the laugh. The quiz is the one bank where each item has to earn it
   alone, which is why it was the weak spot.
+
+## 2026-09-04 — Chasing a 1-in-15 flake, and a guide for the day
+- **A flaky test in the leak guard is not an acceptable flake.** Some tests can be rerun and forgotten.
+  The one asserting that answers do not reach the participant screen early is not one of them, because a
+  test that fails at random is also a test that can pass at random.
+- **Test isolation: `reset()` now clears custom content and usage, not just sessions.** The hostile-text
+  fixture (text === answer) survived into every later section and poisoned random draws. One section
+  must not poison the next.
+- **Assert structurally, not by substring.** Searching the whole payload JSON for the answer string
+  matched the tagline "One team. Any location." when the answer was "One". Looking for an `answer` block
+  by type is both stricter and stable.
+- **Proved the app was innocent before touching the test.** 84 items individually plus 300 random draws,
+  zero pre-reveal exposures. Fixing a test because it is inconvenient is how a real leak gets shipped.
+- **`HOW-TO-RUN.md` is written for the day, not for a developer.** README says what the thing is; the
+  guide says what to do at ten minutes before, and what to press when something breaks mid-session.
+- **Verified every command in the doc by running it.** Documentation that has never been executed is a
+  guess. (My first verification loop reported false failures because zsh does not word-split unquoted
+  variables the way bash does; the harness was wrong, not the commands.)
