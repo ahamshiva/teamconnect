@@ -142,7 +142,10 @@
     const help = f.help ? `<div class="help">${esc(f.help)}</div>` : "";
     if (f.showIf && !f.showIf(values)) return "";
     if (f.type === "range") {
-      return `<div class="field" data-key="${f.key}"><label for="${id}">${esc(f.label)}</label><div class="range-wrap"><input type="range" id="${id}" name="${f.key}" min="${f.min}" max="${f.max}" step="${f.step || 1}" value="${esc(value)}"><span class="val" data-val-for="${f.key}">${esc(value)}${f.unit ? " " + f.unit : ""}</span></div>${help}</div>`;
+      /* The number is an input, not a label. Dragging a slider to land on exactly 12 questions is
+         fiddly on a trackpad, and the value looked read-only, so people did not think they could set
+         it at all. The range still carries the field name, so readForm keeps reading one value. */
+      return `<div class="field" data-key="${f.key}"><label for="${id}">${esc(f.label)}</label><div class="range-wrap"><input type="range" id="${id}" name="${f.key}" min="${f.min}" max="${f.max}" step="${f.step || 1}" value="${esc(value)}"><input type="number" class="val" data-val-for="${f.key}" aria-label="${esc(f.label)}" min="${f.min}" max="${f.max}" step="${f.step || 1}" value="${esc(value)}">${f.unit ? `<span class="unit">${esc(f.unit)}</span>` : ""}</div>${help}</div>`;
     }
     if (f.type === "number") {
       return `<div class="field" data-key="${f.key}"><label for="${id}">${esc(f.label)}</label><input class="input num" type="number" id="${id}" name="${f.key}" min="${f.min != null ? f.min : ""}" max="${f.max != null ? f.max : ""}" step="${f.step || 1}" value="${esc(value)}">${help}</div>`;
@@ -199,7 +202,21 @@
   UI.bindFormLive = function (container, onChange) {
     container.addEventListener("input", e => {
       const t = e.target;
-      if (t.type === "range") { const v = container.querySelector(`[data-val-for="${t.name}"]`); if (v) { const unit = v.textContent.replace(/^[\d.\-]+\s?/, ""); v.textContent = t.value + (unit ? " " + unit : ""); } }
+      if (t.type === "range") { const v = container.querySelector(`[data-val-for="${t.name}"]`); if (v) v.value = t.value; }
+      /* Typing in the box drives the slider. Clamp on the way through, because a number input happily
+         accepts 999 or a pasted word, and then report it as a change on the range: the range carries
+         the field name, so it is what every listener and readForm actually read. */
+      if (t.type === "number" && t.dataset.valFor) {
+        const range = container.querySelector(`input[type="range"][name="${t.dataset.valFor}"]`);
+        if (range && t.value !== "") {
+          let n = Number(t.value);
+          if (isNaN(n)) n = Number(range.min);
+          n = Math.max(Number(range.min), Math.min(Number(range.max), n));
+          range.value = n;
+          if (onChange) onChange(range);
+          return;
+        }
+      }
       if (t.type === "checkbox" && t.closest(".switch")) { const txt = t.closest(".switch").querySelector(".txt"); if (txt) txt.textContent = t.checked ? "On" : "Off"; }
       if (t.type === "checkbox" && t.closest(".check-chip")) t.closest(".check-chip").classList.toggle("on", t.checked);
       if (onChange) onChange(t);

@@ -738,6 +738,39 @@ async function seedSession(page, opts) {
     await page.close();
   });
 
+  await test("a count can be typed, not only dragged", async () => {
+    const page = await fresh(context, { clear: true });
+    await seedSession(page, { games: ["quiz"] });
+    const r = await page.evaluate(() => {
+      const a = TCL.session().runSheet[0];
+      const host = document.createElement("div");
+      document.body.appendChild(host);
+      const schema = TCL.Games.get(a.gameId).settingsSchema;
+      host.innerHTML = TCL.UI.form(schema, TCL.Runner.settingsOf(a));
+      TCL.UI.bindFormLive(host, () => {});
+      const box = host.querySelector('input.val[data-val-for="count"]');
+      const range = host.querySelector('input[type="range"][name="count"]');
+      const out = { typeable: !!box && box.type === "number", pairs: host.querySelectorAll('input[type="range"]').length };
+      const type = v => { box.value = v; box.dispatchEvent(new Event("input", { bubbles: true })); return range.value; };
+      out.exact = type("12");
+      out.aboveMax = type("999");
+      out.belowMin = type("0");
+      /* The range keeps the field name, so the form still reads exactly one value for the key. */
+      out.named = host.querySelectorAll('[name="count"]').length;
+      out.read = TCL.UI.readForm(host, schema, TCL.Runner.settingsOf(a)).count;
+      out.max = Number(range.max); out.min = Number(range.min);
+      host.remove();
+      return out;
+    });
+    ok(r.typeable, "the number beside the slider is an input you can type into");
+    ok(r.exact === "12", "typing an exact value moves the slider to it: " + r.exact);
+    ok(Number(r.aboveMax) === r.max, "a value above the maximum clamps rather than sticking: " + r.aboveMax);
+    ok(Number(r.belowMin) === r.min, "a value below the minimum clamps too: " + r.belowMin);
+    ok(r.named === 1, "only one control carries the field name, so the form still reads one value");
+    ok(r.read === r.min, "readForm reads the clamped value (" + r.read + ")");
+    await page.close();
+  });
+
   await test("the participant scoreboard names members, and yields when the frame will not hold them", async () => {
     const page = await context.newPage();
     await page.goto(FILE + "#presentation");
