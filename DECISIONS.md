@@ -654,3 +654,16 @@ inside the ring.
 - **Not defects, recorded for the next session:** clearing localStorage does not reset the app while a
   tab is open; Indic and CJK glyphs render lighter than Latin at the same size and are the weakest text
   under Zoom compression.
+
+## 2026-09-04 — Fun is a separate axis from accuracy
+- **Audited the questions for engagement, not just truth.** The fact audit said they were correct. That
+  says nothing about whether anyone enjoys them.
+- **The measurable proxy was the payoff line.** Does the item give the facilitator something to say after
+  the reveal? factfiction and wronganswers were at 100%, the quiz at 82%, and the missing ten were
+  precisely the flat ones. A measurable proxy beat a vibe check.
+- **Cut "What does http stand for".** For a room of IT professionals an easy question aimed at their own
+  field reads as condescending, which is worse than boring. Replaced with the Excite turning down Google
+  story, which has a real reveal.
+- **Formats carry more of the fun than items do.** Gibberish, five-second and would-you-rather are strong
+  because the format manufactures the laugh. The quiz is the one bank where each item has to earn it
+  alone, which is why it was the weak spot.

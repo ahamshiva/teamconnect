@@ -1,5 +1,26 @@
 # HANDOVER — team_connect
 
+## Where We Are (2026-09-04 session, part 23 · the questions are now fun, not just true)
+Venkat asked whether the questions are engaging and funny. The fact audit had only established that they
+are *true*. Measured the other axis with a proxy: does an item give the facilitator a payoff line to say
+after the reveal? factfiction and wronganswers were at **100%**, the quiz at **82%**, and the ten without
+one were exactly the flat items.
+
+Fixed: the quiz is now at **100%**. Cut "What does http stand for" outright, because for a room of IT
+professionals an easy question about their own field reads as condescending rather than merely boring.
+Replaced it with which company turned down buying Google for under a million dollars (Excite), which has
+an actual reveal. Wrote payoff lines for the other nine, each teaching something real: gallium melting in
+your hand, the artichoke opening into a purple thistle, a Mandarin dog saying wang wang and a Filipino
+dog saying aw aw, Beijing and Nanjing being directions on a map.
+
+Verified all 84 quiz items still have `correctIndex` pointing at the right option, no em-dashes, and the
+note renders in the **private** block on the console so the facilitator reads it aloud and it never
+reaches participants. Suites 440 and 58.
+
+**The formats carry the fun elsewhere and are strong as they are:** gibberish is the standout for an
+office team (MUNDANE MOURNING MEATING, CANNES EYE HAVER EYES), five-second has "name 3 things heavier
+than a Monday mood", and would-you-rather has the horse-sized duck.
+
 ## Where We Are (2026-09-04 session, part 22 · final end-to-end and edge pass)
 A full sweep before the Zoom call: every activity driven, deliberate edge cases, and a complete session
 played through the real UI from the wizard to the podium. **One real defect found and fixed. Zero runtime
