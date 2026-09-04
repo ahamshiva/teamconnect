@@ -1,5 +1,48 @@
 # HANDOVER — team_games
 
+## Where We Are (2026-09-04 session, part 20 · quiz pays by difficulty, and the content audit)
+Two things, both of which the Zoom call does not block.
+
+**The quiz now pays by difficulty** (medium 15, hard 20), as gibberish already did. With turns each team
+faces a *different* question, so paying the same for a hard one and a medium one shortchanges whoever
+draws harder; and since the bank is medium-and-hard now, the flat 10 was underpaying every question in
+it. Five assertions across three tests had the flat ten baked in. They now assert the *relationship*
+(award equals the question's own worth, a pass is half of it, the bonus is still its own event) so they
+survive a change to the point table instead of pinning a magic number. The mechanics were never wrong:
+`[20,10]` is a hard question passing at half, `25` is 20 plus the 5 bonus. Worth remembering that a
+truncated failure list sent me chasing a bug that did not exist for several minutes; read the whole list
+before forming a theory.
+
+**The content fact audit is done: 160 items, one correction.** Full record in `docs/05-content-audit.md`.
+Scoped to difficulty 2 and 3 in the four banks that assert something and get read aloud, because the new
+difficulty floor concentrates every session onto exactly those claims. quiz 55, factfiction 40,
+wronganswers 33, balderdash 32. gibberish and fivesec were excluded because they assert nothing.
+
+The banks came out **better than expected**. Uncertain origins are hedged rather than asserted ("bless
+you" credits Pope Gregory I only as *often credited*, and admits there is no proven origin). Several
+items actively debunk myths rather than repeat them. The riskiest question is already defended: the Venus
+retrograde item carries a note about Uranus and deliberately keeps Uranus out of the options.
+
+The single correction: the kangaroo item explained that not hopping backwards "is why they face forward
+on the coat of arms". That is a non-sequitur, and the real folk story (that the kangaroo and emu were
+*chosen* for it) has never been official. Reworded to say that, and to say it is unofficial.
+
+Suites: `run.js` **435** · `edge.js` **58**, both pass.
+
+**Exact Next Step: the Zoom call with two or three colleagues.** It is now the only thing left, and four
+behavioural changes have landed since the last full drive-through: rosters on the participant screen,
+gibberish on turns, the difficulty floor, and difficulty-priced quiz points. Each is verified on its own;
+their combined effect on how an hour actually feels is the one thing no test reaches.
+
+**Not covered by the audit:** custom items added through the Content Manager, imported packs, and
+difficulty 1 items (currently unreachable in the six floored games, reachable again the moment anyone
+lowers a floor).
+
+**Files this part:** `src/games/quiz.js`, `src/content/factfiction.js`, `docs/05-content-audit.md` (new),
+`tests/{run,edge}.js`, rebuilt `team-connect.html` + `dev.html`.
+**What is blocked:** nothing.
+**Session cost:** roughly $5-8 USD.
+
 ## Where We Are (2026-09-04 session, part 19 · fair turns, harder questions)
 Venkat: "we don't want people fighting over, we should give fair chance for each team, ensure that the
 questions are not easy." Both done.

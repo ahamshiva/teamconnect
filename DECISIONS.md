@@ -604,3 +604,21 @@ inside the ring.
   not mean the same thing everywhere, and a blanket change would have quietly made three games worse.
 - **A wrong test assertion is not a bug.** The first run failed on `wyr.difficultyMin === 1`; the truth is
   the setting does not exist there. Fixed the assertion, not the game.
+
+## 2026-09-04 — Difficulty-priced quiz points, and the content audit
+- **The quiz pays by difficulty (15/20), matching gibberish.** Under turns each team gets a different
+  question, so a flat rate quietly penalises whoever draws the hard one. Fairness was the whole point of
+  turns, and flat points worked against it.
+- **Tests should assert relationships, not magic numbers.** Five assertions broke on the flat ten. They
+  now derive the expected award from the question's own worth, so the next change to the point table does
+  not break them.
+- **Read the whole failure list before forming a theory.** A truncated list showed a half-value of 5
+  beside an award of 10 and looked like a real scoring bug. The full list showed a hard question worth 20
+  passing at 10, which is correct. Several minutes lost to a bug that never existed.
+- **Content audit: 160 items at difficulty 2 and 3, one correction.** Recorded in
+  `docs/05-content-audit.md`. Scoped to the claims the difficulty floor now concentrates sessions onto,
+  rather than the whole bank. No `verified` field was added: marking 160 records to encode one clean pass
+  is a large diff carrying little information, so the document plus its date is the record.
+- **The banks were in better shape than assumed.** Hedged origins, myths actively debunked, and notes
+  pre-empting the obvious objections. Worth trusting more than a fresh bank, and worth copying the
+  posture when writing new items: hedge what is uncertain, and note the objection you expect.
