@@ -85,6 +85,10 @@
       base.screen = "lobby";
       const next = TCL.Session.nextPending();
       base.blocks = [{ type: "eyebrow", text: s.name }, { type: "title", text: next ? "Up next: " + next.title : "Welcome" }, { type: "text", text: next ? "Get comfortable. We start shortly." : "Grab a drink and settle in." }];
+      /* Who is on my team is the first question in a fifteen-person call, and the lobby is the
+         screen people look at longest. It shows again between activities, because that is the
+         other moment the question comes back. Individual mode has no teams to show. */
+      if (base.teams.length) base.blocks.push({ type: "teams" });
       return base;
     }
     base.screen = "activity";
