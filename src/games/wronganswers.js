@@ -7,7 +7,7 @@
     id: "wronganswers", name: "Wrong Answers Only", tagline: "The funniest wrong answer wins. Then the truth.", category: "Creative",
     description: "A real question appears: why is the keyboard QWERTY? Teams compete for the funniest wrong answer, the room votes, then the facilitator reveals the real answer and a fun fact. A bonus goes to any team that also knew the truth.",
     icon: UI.icons.star, contentGame: "wronganswers", flexKey: "count", modes: ["teams"], needsZoom: "Teams send answers by private chat and vote by chat or reactions",
-    defaultSettings: { count: 4, writeSeconds: 75, categories: [], difficultyMin: 1, difficultyMax: 3, order: "random", points1: 10, points2: 5, truthBonus: 5, anonymous: true, unusedOnly: true, scoringEnabled: true, sound: true },
+    defaultSettings: { count: 4, writeSeconds: 75, categories: [], difficultyMin: 2, difficultyMax: 3, order: "random", points1: 10, points2: 5, truthBonus: 5, anonymous: true, unusedOnly: true, scoringEnabled: true, sound: true },
     settingsSchema: [f.count("count", "Number of questions", 1, 15), f.seconds("writeSeconds", "Writing time", 30, 180, 15), f.categories("wronganswers"), f.diffMin(), f.diffMax(), f.order(), f.number("points1", "Funniest answer", 0, 50), f.number("points2", "Runner-up", 0, 50), f.number("truthBonus", "Bonus for also knowing the real answer", 0, 50), f.toggle("anonymous", "Show answers anonymously until the vote is in"), f.unused()].concat(K.common()),
     summary(s, ctx) { return `${s.count} questions × (${s.writeSeconds}s writing + vote + real answer)`; },
     estimateMinutes(s, ctx) { return K.est(s.count, s.writeSeconds + 45 + ctx.teams * 8, 15); },

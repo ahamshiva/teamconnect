@@ -659,6 +659,50 @@ async function seedSession(page, opts) {
     await page.close();
   });
 
+  await test("knowledge games take turns and never draw an easy item", async () => {
+    const page = await fresh(context, { clear: true });
+    const KNOWLEDGE = ["quiz", "gibberish", "factfiction", "wronganswers", "balderdash", "fivesec"];
+    await seedSession(page, { games: KNOWLEDGE.concat(["rankit", "charades", "wyr"]) });
+    const r = await page.evaluate(games => {
+      const s = TCL.session();
+      const out = { floors: {}, pools: {}, drawn: {}, orders: {} };
+      s.runSheet.filter(a => a.kind === "game").forEach(a => {
+        const g = TCL.Games.get(a.gameId), st = TCL.Runner.settingsOf(a);
+        out.floors[a.gameId] = st.difficultyMin;
+        out.orders[a.gameId] = st.answerOrder || null;
+        /* The bank has to hold enough at the raised floor, or every session opens with a
+           readiness warning and the facilitator has to fix it on the day. */
+        const want = Number(st.count || st.rounds || st.turns || st.items || 0);
+        if (g.contentGame && want) {
+          const sel = TCL.Content.select({ game: g.contentGame, count: want, categories: st.categories, difficultyMin: st.difficultyMin, difficultyMax: st.difficultyMax });
+          out.pools[a.gameId] = { want, pool: sel.pool };
+        }
+        if (games.indexOf(a.gameId) >= 0) {
+          TCL.Runner.start(a.id);
+          const cur = TCL.Runner.current();
+          if (cur && cur.state && cur.state.items) out.drawn[a.gameId] = cur.state.items.map(i => i.difficulty);
+          TCL.Runner.resetActivity(a.id, false);
+          s.currentActivityId = null;
+        }
+      });
+      out.errors = window.__tclErrors;
+      return out;
+    }, KNOWLEDGE);
+    KNOWLEDGE.forEach(g => ok(r.floors[g] === 2, g + " will not serve an easy question (floor " + r.floors[g] + ")"));
+    KNOWLEDGE.forEach(g => ok((r.drawn[g] || []).every(d => d >= 2), g + " drew nothing easy: " + (r.drawn[g] || []).join(",")));
+    KNOWLEDGE.forEach(g => { const p = r.pools[g]; if (p) ok(p.pool >= p.want, g + " still has enough content at the raised floor (" + p.pool + " for " + p.want + ")"); });
+    ok(r.orders.quiz === "turns" && r.orders.gibberish === "turns", "both games with an answer order take turns, so nobody races on a laggy call");
+    /* rankit holds only 7 items at medium or harder and draws 3, so a floor empties it in two runs. */
+    ok(r.floors.rankit === 1, "rankit keeps the full bank: its harder end is too thin to filter");
+    /* In charades difficulty is how hard it is to act, and would-you-rather does not filter on
+       difficulty at all (it rates how absurd the dilemma is). Neither means "a harder question",
+       so neither gets a floor. */
+    ok(r.floors.charades === 1, "charades keeps the full bank: its difficulty is how hard to act");
+    ok(!(r.floors.wyr >= 2), "would-you-rather is untouched: it has no difficulty filter (" + r.floors.wyr + ")");
+    ok(r.errors.length === 0, "no runtime errors");
+    await page.close();
+  });
+
   await test("the lobby names each team's members, and keeps them current", async () => {
     const page = await fresh(context, { clear: true });
     await seedSession(page, { games: ["factfiction"] });

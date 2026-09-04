@@ -8,7 +8,7 @@
     id: "factfiction", name: "Fact or Fiction", tagline: "Vote true or false. Then hear the real story.", category: "Quiz",
     description: "A statement appears: wombats produce cube-shaped droppings, the Great Wall is visible from the Moon. Teams commit to true or false, then the facilitator reads the real story. Streaks earn a bonus.",
     icon: UI.icons.info, contentGame: "factfiction", flexKey: "count",
-    defaultSettings: { count: 10, seconds: 25, categories: [], difficultyMin: 1, difficultyMax: 3, order: "random", points: 10, streakBonus: 5, streakLength: 3, autoStart: true, autoReveal: false, unusedOnly: true, scoringEnabled: true, sound: true },
+    defaultSettings: { count: 10, seconds: 25, categories: [], difficultyMin: 2, difficultyMax: 3, order: "random", points: 10, streakBonus: 5, streakLength: 3, autoStart: true, autoReveal: false, unusedOnly: true, scoringEnabled: true, sound: true },
     settingsSchema: [f.count("count", "Number of statements", 1, 40), f.seconds("seconds", "Time to commit", 10, 90), f.categories("factfiction"), f.diffMin(), f.diffMax(), f.order(), f.number("points", "Points for a correct call", 0, 50), f.number("streakBonus", "Streak bonus", 0, 50), f.count("streakLength", "Correct calls in a row for the bonus", 2, 6), f.toggle("autoStart", "Start the clock automatically"), f.reveal(), f.unused()].concat(K.common()),
     summary(s) { return `${s.count} statements × ${s.seconds}s + the real story`; },
     estimateMinutes(s) { return K.est(s.count, s.seconds + 25, 10); },

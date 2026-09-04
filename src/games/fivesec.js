@@ -19,7 +19,7 @@
     id: "fivesec", name: "Five-Second Frenzy", tagline: "Name three things. Fast.", category: "Energy",
     description: "\"Name 3 pizza toppings!\" The person on the spot must shout three valid answers before the ring dies. Rotates through everyone.",
     icon: UI.icons.clock, contentGame: "fivesec", flexKey: "count",
-    defaultSettings: { count: 12, answers: 3, seconds: 8, categories: [], difficultyMin: 1, difficultyMax: 3, mode: "teams", teamHelp: false, points: 5, partial: true, partialPoints: 2, retry: false, unusedOnly: true, scoringEnabled: true, sound: true },
+    defaultSettings: { count: 12, answers: 3, seconds: 8, categories: [], difficultyMin: 2, difficultyMax: 3, mode: "teams", teamHelp: false, points: 5, partial: true, partialPoints: 2, retry: false, unusedOnly: true, scoringEnabled: true, sound: true },
     settingsSchema: [f.count("count", "Number of prompts", 1, 60), f.count("answers", "Answers required", 1, 5), f.select("seconds", "Response time", [{ value: 5, label: "5 seconds (savage)" }, { value: 8, label: "8 seconds (remote-friendly)" }, { value: 10, label: "10 seconds (chill)" }, { value: 15, label: "15 seconds (custom, relaxed)" }]), f.categories("fivesec"), f.diffMin(), f.diffMax(), f.mode(), f.toggle("teamHelp", "Team may help"), f.number("points", "Points for success", 0, 50), f.toggle("partial", "Partial points for 2 of 3"), f.number("partialPoints", "Partial points", 0, 50), f.toggle("retry", "Allow one retry with a new prompt"), f.unused()].concat(K.common()),
     summary(s) { return `${s.count} prompts, ${s.answers} answers in ${s.seconds}s`; },
     estimateMinutes(s) { return K.est(K.num(s.count, 8, 1, 200), K.num(s.seconds, 8, 1, 600), 18); },
