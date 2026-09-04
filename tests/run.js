@@ -738,6 +738,43 @@ async function seedSession(page, opts) {
     await page.close();
   });
 
+  await test("the participant scoreboard names members, and yields when the frame will not hold them", async () => {
+    const page = await context.newPage();
+    await page.goto(FILE + "#presentation");
+    await page.waitForFunction(() => window.TCL && TCL.PresentationView);
+    await page.setViewportSize({ width: 1280, height: 720 });
+    const measure = async (teams, largeText) => page.evaluate(o => {
+      const names = ["Ana", "Bao", "Chen", "Deepa", "Ellie", "Farid", "Grace", "Hari", "Ivy", "Jomar", "Kiran", "Lian"];
+      const colors = ["#ff4d6d", "#23d5ab", "#ffb454", "#5e8bff", "#c77dff", "#4dd0e1"];
+      const built = [];
+      for (let i = 0; i < o.teams; i++) built.push({ name: "Team " + (i + 1), color: colors[i % 6], members: names.slice(i * 2, i * 2 + 2) });
+      /* Feed it through the real channel the console uses. render() reads the payload the sync layer
+         stored, so handing it an argument would quietly measure the previous frame. */
+      window.postMessage({ channel: "tcl-presentation", type: "payload", payload: {
+        brand: "TEAM CONNECT LIVE", tagline: "One team. Any location. Real connections.", sessionName: "Fit",
+        screen: "activity", activityTitle: "Rapid-Fire Quiz", largeText: o.largeText, scale: 1,
+        blocks: [{ type: "prompt", text: "A question that owns the stage" }], timers: {},
+        teams: built, standings: built.map((t, i) => ({ name: t.name, total: 0, color: t.color, rank: i + 1 })),
+      } }, "*");
+      return new Promise(resolve => setTimeout(() => {
+        const sb = document.querySelector(".pres-sb"), foot = document.querySelector(".pres-foot");
+        const r = sb.getBoundingClientRect(), f = foot.getBoundingClientRect();
+        resolve({ memberLines: document.querySelectorAll(".pres-sb .mem").length, collides: r.bottom > f.top + 1 });
+      }, 60));
+    }, { teams, largeText });
+    const small = await measure(3, false);
+    const many = await measure(6, false);
+    const bigFew = await measure(4, true);
+    const bigMany = await measure(6, true);
+    ok(small.memberLines === 3 && !small.collides, "three teams: every team names its members");
+    ok(many.memberLines === 6 && !many.collides, "six teams still fit at the normal size");
+    ok(bigFew.memberLines === 4 && !bigFew.collides, "four teams fit even in large-text mode");
+    /* The window is a fixed frame, so anything too tall collides with the footer rather than
+       scrolling. A score nobody can read is worse than a roster nobody asked for. */
+    ok(bigMany.memberLines === 0 && !bigMany.collides, "six teams in large-text mode drop the names rather than overlap the footer");
+    await page.close();
+  });
+
   await test("the lobby names each team's members, and keeps them current", async () => {
     const page = await fresh(context, { clear: true });
     await seedSession(page, { games: ["factfiction"] });

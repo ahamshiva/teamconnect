@@ -50,7 +50,10 @@
 .pres-stage .mask { font-size: calc(48px * var(--s)); letter-spacing: .1em; }
 .pres-sb { width: calc(240px * var(--s)); display: flex; flex-direction: column; gap: 8px; align-self: start; }
 .pres-sb h4 { font-family: var(--font-mono); font-size: calc(11px * var(--s)); letter-spacing: .24em; text-transform: uppercase; color: var(--muted); font-weight: 500; margin-bottom: 4px; }
-.pres-sb .row { display: flex; align-items: center; justify-content: space-between; gap: 8px; border-left: 4px solid var(--tc); background: rgba(246, 244, 239, .04); border-radius: 10px; padding: calc(8px * var(--s)) calc(10px * var(--s)); }
+.pres-sb .row { display: flex; flex-direction: column; gap: 2px; border-left: 4px solid var(--tc); background: rgba(246, 244, 239, .04); border-radius: 10px; padding: calc(8px * var(--s)) calc(10px * var(--s)); }
+.pres-sb .row .top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+/* The names are the point of this block, so they wrap rather than truncate. */
+.pres-sb .row .mem { font-size: calc(12px * var(--s)); color: var(--muted); line-height: 1.35; }
 .pres-sb .row .nm { font-weight: 700; font-size: calc(15px * var(--s)); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .pres-sb .row .pts { font-family: var(--font-mono); font-size: calc(20px * var(--s)); color: var(--tc); }
 .pres-sb .row.leader { box-shadow: 0 0 20px rgba(232, 184, 75, .15); }

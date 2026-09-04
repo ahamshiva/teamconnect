@@ -580,7 +580,10 @@ details.menu.left .menu-pop { right: auto; left: 0; }
 .pres-stage .mask { font-size: calc(48px * var(--s)); letter-spacing: .1em; }
 .pres-sb { width: calc(240px * var(--s)); display: flex; flex-direction: column; gap: 8px; align-self: start; }
 .pres-sb h4 { font-family: var(--font-mono); font-size: calc(11px * var(--s)); letter-spacing: .24em; text-transform: uppercase; color: var(--muted); font-weight: 500; margin-bottom: 4px; }
-.pres-sb .row { display: flex; align-items: center; justify-content: space-between; gap: 8px; border-left: 4px solid var(--tc); background: rgba(246, 244, 239, .04); border-radius: 10px; padding: calc(8px * var(--s)) calc(10px * var(--s)); }
+.pres-sb .row { display: flex; flex-direction: column; gap: 2px; border-left: 4px solid var(--tc); background: rgba(246, 244, 239, .04); border-radius: 10px; padding: calc(8px * var(--s)) calc(10px * var(--s)); }
+.pres-sb .row .top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+/* The names are the point of this block, so they wrap rather than truncate. */
+.pres-sb .row .mem { font-size: calc(12px * var(--s)); color: var(--muted); line-height: 1.35; }
 .pres-sb .row .nm { font-weight: 700; font-size: calc(15px * var(--s)); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .pres-sb .row .pts { font-family: var(--font-mono); font-size: calc(20px * var(--s)); color: var(--tc); }
 .pres-sb .row.leader { box-shadow: 0 0 20px rgba(232, 184, 75, .15); }
@@ -7502,7 +7505,23 @@ details.menu.left .menu-pop { right: auto; left: 0; }
   }
   function standings(p) {
     if (!p.standings) return "";
-    return `<aside class="pres-sb" aria-label="Scores"><h4>Scores</h4>${p.standings.map(r => `<div class="row ${r.rank === 1 && r.total > 0 ? "leader" : ""}" style="--tc:${r.color}" data-sb="${esc(r.name)}"><span class="nm">${esc(r.name)}</span><span class="pts">${r.total}</span></div>`).join("")}</aside>`;
+    /* Members ride along under each team. The lobby names them, but the question people actually keep
+       asking is "which team am I on", and they ask it in the middle of a round, not before it. The
+       stage belongs to the prompt and the clock, so the roster lives here instead. */
+    /* The participant window is a fixed frame: it does not scroll, so anything too tall collides with
+       the footer instead of overflowing. Six teams in large-text mode is exactly that case, and a
+       score nobody can read is worse than a roster nobody asked for, so the names yield first. */
+    const teamCount = (p.teams || []).length;
+    const roomForMembers = teamCount <= 4 || !p.largeText;
+    const membersOf = name => {
+      if (!roomForMembers) return "";
+      const t = (p.teams || []).find(x => x.name === name);
+      return t && t.members && t.members.length ? t.members.join(" · ") : "";
+    };
+    return `<aside class="pres-sb" aria-label="Scores"><h4>Scores</h4>${p.standings.map(r => {
+      const mem = membersOf(r.name);
+      return `<div class="row ${r.rank === 1 && r.total > 0 ? "leader" : ""}" style="--tc:${r.color}" data-sb="${esc(r.name)}"><div class="top"><span class="nm">${esc(r.name)}</span><span class="pts">${r.total}</span></div>${mem ? `<div class="mem">${esc(mem)}</div>` : ""}</div>`;
+    }).join("")}</aside>`;
   }
   P.render = function () {
     const root = document.getElementById("app");

@@ -38,7 +38,23 @@
   }
   function standings(p) {
     if (!p.standings) return "";
-    return `<aside class="pres-sb" aria-label="Scores"><h4>Scores</h4>${p.standings.map(r => `<div class="row ${r.rank === 1 && r.total > 0 ? "leader" : ""}" style="--tc:${r.color}" data-sb="${esc(r.name)}"><span class="nm">${esc(r.name)}</span><span class="pts">${r.total}</span></div>`).join("")}</aside>`;
+    /* Members ride along under each team. The lobby names them, but the question people actually keep
+       asking is "which team am I on", and they ask it in the middle of a round, not before it. The
+       stage belongs to the prompt and the clock, so the roster lives here instead. */
+    /* The participant window is a fixed frame: it does not scroll, so anything too tall collides with
+       the footer instead of overflowing. Six teams in large-text mode is exactly that case, and a
+       score nobody can read is worse than a roster nobody asked for, so the names yield first. */
+    const teamCount = (p.teams || []).length;
+    const roomForMembers = teamCount <= 4 || !p.largeText;
+    const membersOf = name => {
+      if (!roomForMembers) return "";
+      const t = (p.teams || []).find(x => x.name === name);
+      return t && t.members && t.members.length ? t.members.join(" · ") : "";
+    };
+    return `<aside class="pres-sb" aria-label="Scores"><h4>Scores</h4>${p.standings.map(r => {
+      const mem = membersOf(r.name);
+      return `<div class="row ${r.rank === 1 && r.total > 0 ? "leader" : ""}" style="--tc:${r.color}" data-sb="${esc(r.name)}"><div class="top"><span class="nm">${esc(r.name)}</span><span class="pts">${r.total}</span></div>${mem ? `<div class="mem">${esc(mem)}</div>` : ""}</div>`;
+    }).join("")}</aside>`;
   }
   P.render = function () {
     const root = document.getElementById("app");
