@@ -573,3 +573,19 @@ inside the ring.
   team leads a different activity. Documented for the facilitator to decide, not changed.
 - **Not machine-testable, still open:** Zoom compression on the shared window, and how the pacing of
   turn-taking feels with real people.
+
+## 2026-09-04 — Team rosters on the participant screen
+- **The lobby names each team's members.** Which team am I on is the first question in a fifteen-person
+  call and the shared screen never answered it. Put on the lobby (and so between activities too), not on
+  the activity stage: the prompt and timer own that screen and cramming the roster in would squeeze it.
+- **The renderer already existed and was unused.** A full `teams` block sat in `90-presentation.js` with
+  `base.teams` populated on every push, emitted by exactly one game. Check what the payload already
+  carries before building anything new for the participant window.
+- **`Session.touch()` now pushes to the presentation.** It persisted without pushing, so participant and
+  team edits never reached the shared screen. Invisible until rosters were shown; then rebalancing left
+  three dead teams on screen. Not routed through `session:changed`, which also re-renders the console and
+  would double-render over live form inputs.
+- **A feature that displays state creates an obligation to keep that state fresh.** Showing something new
+  on the shared screen means auditing every path that can change it.
+- **Not built, on purpose:** a session countdown clock for participants. It would turn a warm hour into a
+  deadline. Session progress ("Activity 2 of 5") and late-joiner context are still worth doing.

@@ -1,5 +1,42 @@
 # HANDOVER — team_games
 
+## Where We Are (2026-09-04 session, part 18 · team rosters on the participant screen)
+Venkat: the presentation window should name each team's members, otherwise people get confused.
+Agreed, and it turned out the machinery was already built and unused. `90-presentation.js` has a full
+`teams` block (name, colour bar, members) and `buildPayload` has always carried `base.teams`, but only
+Common Ground's breakout brief ever emitted the block. So the answer to the first question in a
+fifteen-person call was nowhere on the shared screen.
+
+The roster now shows on the **lobby** screen, which is where people look longest and had the most empty
+space, and it shows again between activities because that is the other moment the question comes back.
+Individual mode shows none. Verified on a real 720p window at 3 and 6 teams: no overflow, card colours
+match the scores sidebar so people can connect the two.
+
+**Showing it immediately exposed a real bug.** Rebalancing 6 teams into 3 left the participant window
+displaying all six, including three that no longer existed. `Session.touch()` persisted but never pushed,
+so every participant and team edit was invisible to the shared screen; the window only caught up by
+accident when something else changed the route. A stale roster is worse than no roster. `touch()` now
+pushes. Deliberately not via `emit("session:changed")`, which would also re-render the console on top of
+the live inputs on the participants form; `push()` no-ops when the public payload is unchanged, so it is
+cheap. Verified live: 6 to 3 propagates with no navigation, a late joiner appears on their team.
+
+Suite: 406 -> **412**. Both new assertions were checked against reverted code and fail without their
+fixes. `edge.js` 58, unchanged. No console errors anywhere.
+
+**Exact Next Step: still the real Zoom call with two or three colleagues.** Now with one more thing to
+watch: whether the roster cards are readable once Zoom compresses the share. Contrast is fine on paper
+(`#9aa0bd` on near-black is about 8:1) but compression is the untested variable, and the member names are
+exactly the text people need most.
+
+**Considered and not built:** session progress ("Activity 2 of 5") and a line of context for late
+joiners. Both still worth doing. Argued against a session countdown clock on the shared screen: it turns
+a warm hour into a deadline, and the facilitator already has the pacing tools.
+
+**Files this part:** `src/core/{60-sync,40-session}.js`, `tests/run.js`, rebuilt `team-connect.html` +
+`dev.html`.
+**What is blocked:** nothing.
+**Session cost:** roughly $4-6 USD.
+
 ## Where We Are (2026-09-04 session, part 17 · the rehearsal finally happened)
 Drove the app end to end as a facilitator in a real browser: fresh profile, empty storage, first-run
 screen onward. Two sessions played. The built-in **Rehearse** (17 activities, 5x timers) and a real
