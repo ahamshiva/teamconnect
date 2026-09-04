@@ -8,12 +8,12 @@
     { text: "Which of these is botanically a berry?", answer: "Banana", options: ["Strawberry", "Raspberry", "Banana", "Cherry"], correctIndex: 2, category: "Science", difficulty: 2, note: "Bananas are berries. Strawberries and raspberries are not." },
     { text: "Which planet is known as the Red Planet?", answer: "Mars", options: ["Venus", "Mars", "Mercury", "Saturn"], correctIndex: 1, category: "Science", difficulty: 1 },
     { text: "About how long does sunlight take to reach Earth?", answer: "8 minutes", options: ["8 seconds", "8 hours", "80 minutes", "8 minutes"], correctIndex: 3, category: "Science", difficulty: 2, note: "So you always see the Sun as it was about eight minutes ago." },
-    { text: "Which metal is a liquid at room temperature?", answer: "Mercury", options: ["Mercury", "Lead", "Tin", "Zinc"], correctIndex: 0, category: "Science", difficulty: 2 },
+    { text: "Which metal is a liquid at room temperature?", answer: "Mercury", options: ["Mercury", "Lead", "Tin", "Zinc"], correctIndex: 0, category: "Science", difficulty: 2, note: "Gallium is the party trick version: it melts at about 30 degrees, so a spoon of it turns to liquid in your hand. Mercury is the only metal that manages it at normal room temperature." },
 
     /* ---------- Geography ---------- */
     { text: "Which mountain has the highest peak above sea level?", answer: "Mount Everest", options: ["K2", "Denali", "Kilimanjaro", "Mount Everest"], correctIndex: 3, category: "Geography", difficulty: 1, note: "Measured from its base, Mauna Kea in Hawaii is taller. Everest wins on sea level." },
     { text: "By most measurements, which is the world's longest river?", answer: "Nile", options: ["Amazon", "Yangtze", "Nile", "Mississippi"], correctIndex: 2, category: "Geography", difficulty: 2, note: "Some studies argue for the Amazon, so this one still gets debated." },
-    { text: "Which two countries share the longest land border in the world?", answer: "The USA and Canada", options: ["Russia and China", "India and Bangladesh", "Argentina and Chile", "The USA and Canada"], correctIndex: 3, category: "Geography", difficulty: 2 },
+    { text: "Which two countries share the longest land border in the world?", answer: "The USA and Canada", options: ["Russia and China", "India and Bangladesh", "Argentina and Chile", "The USA and Canada"], correctIndex: 3, category: "Geography", difficulty: 2, note: "About 8,900 km of it, and roughly a quarter of that is the Alaska stretch most people forget exists." },
     { text: "Which is the largest country in the world by land area?", answer: "Russia", options: ["Canada", "China", "Russia", "Brazil"], correctIndex: 2, category: "Geography", difficulty: 1 },
     { text: "Which country sits across the Tasman Sea from Australia?", answer: "New Zealand", options: ["Fiji", "Indonesia", "New Zealand", "Papua New Guinea"], correctIndex: 2, category: "Geography", difficulty: 1 },
     { text: "Which country has more ancient pyramids than Egypt?", answer: "Sudan", options: ["Sudan", "Libya", "Ethiopia", "Morocco"], correctIndex: 0, category: "Geography", difficulty: 3, note: "The Nubian pyramids of Sudan number in the hundreds. Smaller, steeper, far less famous." },
@@ -23,7 +23,7 @@
     { text: "Which company owns YouTube?", answer: "Google", options: ["Google", "Meta", "Microsoft", "Amazon"], correctIndex: 0, category: "Tech", difficulty: 1 },
     { text: "In which year was the first iPhone released?", answer: "2007", options: ["2005", "2007", "2009", "2011"], correctIndex: 1, category: "Tech", difficulty: 1 },
     { text: "What did the world's first text message, sent in 1992, say?", answer: "Merry Christmas", options: ["Hello world", "Test message", "Merry Christmas", "Can you hear me"], correctIndex: 2, category: "Tech", difficulty: 2, note: "It was sent from a computer to a phone. The phone could not reply." },
-    { text: "What does the http in a web address stand for?", answer: "HyperText Transfer Protocol", options: ["HyperText Transfer Protocol", "High Transfer Text Process", "Hyperlink Transport Protocol", "Home Text Transfer Path"], correctIndex: 0, category: "Tech", difficulty: 2 },
+    { text: "In 1999 Google's founders tried to sell the company for under a million dollars. Which company turned them down?", answer: "Excite", options: ["Yahoo", "Excite", "AltaVista", "Ask Jeeves"], correctIndex: 1, category: "Tech", difficulty: 3, note: "Excite's chief executive passed. Alphabet is now worth well over a trillion dollars, which makes that comfortably the most expensive no in business history." },
     { text: "What was Google originally called when it started as a research project?", answer: "BackRub", options: ["Searchly", "WebCrawl", "Googol", "BackRub"], correctIndex: 3, category: "Tech", difficulty: 3, note: "Named after how it analysed back links. Renaming it was a good call." },
 
     /* ---------- Food ---------- */
@@ -31,14 +31,14 @@
     { text: "Which spice is the most expensive in the world by weight?", answer: "Saffron", options: ["Vanilla", "Cardamom", "Saffron", "Black pepper"], correctIndex: 2, category: "Food", difficulty: 2, note: "It takes thousands of hand-picked crocus flowers to make one kilogram." },
     { text: "Which fruit carries its seeds on the outside?", answer: "Strawberry", options: ["Blueberry", "Kiwi fruit", "Strawberry", "Fig"], correctIndex: 2, category: "Food", difficulty: 1 },
     { text: "Peanuts are not nuts. What are they?", answer: "Legumes", options: ["Berries", "Grains", "Tubers", "Legumes"], correctIndex: 3, category: "Food", difficulty: 3, note: "Same family as peas and beans, and they grow underground." },
-    { text: "Which vegetable is a type of thistle?", answer: "Artichoke", options: ["Artichoke", "Celery", "Leek", "Fennel"], correctIndex: 0, category: "Food", difficulty: 3 },
+    { text: "Which vegetable is a type of thistle?", answer: "Artichoke", options: ["Artichoke", "Celery", "Leek", "Fennel"], correctIndex: 0, category: "Food", difficulty: 3, note: "You are eating the flower bud. Leave one on the plant and it opens into a huge purple thistle flower that bees go mad for." },
 
     /* ---------- Pop Culture ---------- */
     { text: "Which artist painted the Mona Lisa?", answer: "Leonardo da Vinci", options: ["Michelangelo", "Raphael", "Leonardo da Vinci", "Donatello"], correctIndex: 2, category: "Pop Culture", difficulty: 1 },
     { text: "In the US version of The Office, what is the paper company called?", answer: "Dunder Mifflin", options: ["Dunder Mifflin", "Wernham Hogg", "Sabre", "Initech"], correctIndex: 0, category: "Pop Culture", difficulty: 1 },
     { text: "What is the first game played in Squid Game?", answer: "Red Light, Green Light", options: ["Tug of war", "Red Light, Green Light", "Marbles", "Glass bridge"], correctIndex: 1, category: "Pop Culture", difficulty: 1 },
     { text: "What is the name of Superman's home planet?", answer: "Krypton", options: ["Krypton", "Tamaran", "Vulcan", "Asgard"], correctIndex: 0, category: "Pop Culture", difficulty: 1 },
-    { text: "Which nickname belongs to Batman?", answer: "The Caped Crusader", options: ["The Dark Detective", "The Caped Crusader", "The Night Watcher", "The Masked Avenger"], correctIndex: 1, category: "Pop Culture", difficulty: 2 },
+    { text: "Which nickname belongs to Batman?", answer: "The Caped Crusader", options: ["The Dark Detective", "The Caped Crusader", "The Night Watcher", "The Masked Avenger"], correctIndex: 1, category: "Pop Culture", difficulty: 2, note: "He collects them: the Dark Knight, the Caped Crusader, and the World's Greatest Detective. He arrived in 1939, a year after Superman." },
     { text: "Who provided the voice of Darth Vader in the original Star Wars films?", answer: "James Earl Jones", options: ["James Earl Jones", "Morgan Freeman", "Samuel L. Jackson", "Idris Elba"], correctIndex: 0, category: "Pop Culture", difficulty: 2, note: "David Prowse wore the suit. The voice was dubbed on later." },
 
     /* ---------- Sport ---------- */
@@ -53,14 +53,14 @@
     { text: "Norway has given a knighthood to which animal?", answer: "A penguin", options: ["A penguin", "A reindeer", "A horse", "A dog"], correctIndex: 0, category: "Weird World", difficulty: 3, note: "Sir Nils Olav, a king penguin at Edinburgh Zoo, is a colonel-in-chief of the Norwegian King's Guard." },
     { text: "In Switzerland it is against the law to keep only one of which pet?", answer: "Guinea pig", options: ["Cat", "Rabbit", "Guinea pig", "Parrot"], correctIndex: 2, category: "Weird World", difficulty: 3, note: "Swiss law treats social animals as needing company, so they come in pairs." },
     { text: "Durian is banned on Singapore's metro because of what?", answer: "Its strong smell", options: ["Its sharp spikes", "Its high price", "Its sticky juice", "Its strong smell"], correctIndex: 3, category: "Weird World", difficulty: 2, note: "There is a no-durian sign on the trains, and it is the only food singled out." },
-    { text: "What is a group of flamingos called?", answer: "A flamboyance", options: ["A flock", "A parade", "A blush", "A flamboyance"], correctIndex: 3, category: "Weird World", difficulty: 3 },
+    { text: "What is a group of flamingos called?", answer: "A flamboyance", options: ["A flock", "A parade", "A blush", "A flamboyance"], correctIndex: 3, category: "Weird World", difficulty: 3, note: "Most of these fanciful group names come from old English hunting lists rather than from science, which is the same tradition that gave us a murder of crows." },
 
     /* ---------- Words ---------- */
     { text: "What does the phrase burning the midnight oil mean?", answer: "Working late into the night", options: ["Wasting money", "Working late into the night", "Cooking slowly", "Arguing loudly"], correctIndex: 1, category: "Words", difficulty: 1 },
     { text: "Which language has the most native speakers in the world?", answer: "Mandarin Chinese", options: ["English", "Spanish", "Mandarin Chinese", "Hindi"], correctIndex: 2, category: "Words", difficulty: 1, note: "English wins on total speakers. Mandarin wins on native speakers." },
     { text: "What is a palindrome?", answer: "A word that reads the same backwards", options: ["A word with no vowels", "A word borrowed from Latin", "A word that reads the same backwards", "A word with silent letters"], correctIndex: 2, category: "Words", difficulty: 2, note: "Level, radar, kayak. Also the name Anna." },
     { text: "The English word shampoo comes from which language?", answer: "Hindi", options: ["Hindi", "Arabic", "Malay", "Portuguese"], correctIndex: 0, category: "Words", difficulty: 3, note: "From champo, meaning to press or massage." },
-    { text: "What is the term for a word like buzz or sizzle that sounds like its meaning?", answer: "Onomatopoeia", options: ["Alliteration", "Metaphor", "Homonym", "Onomatopoeia"], correctIndex: 3, category: "Words", difficulty: 2 },
+    { text: "What is the term for a word like buzz or sizzle that sounds like its meaning?", answer: "Onomatopoeia", options: ["Alliteration", "Metaphor", "Homonym", "Onomatopoeia"], correctIndex: 3, category: "Words", difficulty: 2, note: "It is Greek for name making. Languages hear the same sound differently: an English dog says woof, a Mandarin dog says wang wang, and a Filipino dog says aw aw." },
 
     /* ---------- Brain Teaser ---------- */
     { text: "A farmer has 17 sheep. All but 9 run away. How many are left?", answer: "Nine", options: ["Eight", "Nine", "Seventeen", "None"], correctIndex: 1, category: "Brain Teaser", difficulty: 2, note: "All but 9 means 9 stayed. Most people say 8 the first time." },
@@ -71,14 +71,14 @@
     /* ---------- Australia ---------- */
     { text: "What is the capital city of Australia?", answer: "Canberra", options: ["Sydney", "Melbourne", "Canberra", "Perth"], correctIndex: 2, category: "Australia", difficulty: 1 },
     { text: "Which two animals appear on Australia's coat of arms?", answer: "Kangaroo and emu", options: ["Koala and wombat", "Kangaroo and emu", "Dingo and platypus", "Emu and koala"], correctIndex: 1, category: "Australia", difficulty: 1 },
-    { text: "What is a group of kangaroos called?", answer: "A mob", options: ["A herd", "A troop", "A pack", "A mob"], correctIndex: 3, category: "Australia", difficulty: 2 },
+    { text: "What is a group of kangaroos called?", answer: "A mob", options: ["A herd", "A troop", "A pack", "A mob"], correctIndex: 3, category: "Australia", difficulty: 2, note: "A mob, a troop or a court, all three are used. The one in the pouch is a joey, a big male is a boomer and a female is a flyer." },
     { text: "Australia is wider from east to west than which of these?", answer: "The Moon", options: ["The Moon", "Mars", "Jupiter", "Saturn"], correctIndex: 0, category: "Australia", difficulty: 3, note: "About 4,000 km across, against the Moon's 3,475 km diameter." },
     { text: "Which Australian animal produces cube-shaped droppings?", answer: "Wombat", options: ["Koala", "Wombat", "Echidna", "Quokka"], correctIndex: 1, category: "Australia", difficulty: 2, note: "The cubes stack and do not roll away, which helps them mark territory." },
 
     /* ---------- India ---------- */
     { text: "Which Indian city is known as the Silicon Valley of India?", answer: "Bengaluru", options: ["Hyderabad", "Bengaluru", "Pune", "Chennai"], correctIndex: 1, category: "India", difficulty: 1 },
     { text: "Gurugram was officially known by what name until 2016?", answer: "Gurgaon", options: ["Gurgaon", "Guru Nagar", "Gurdaspur", "Girigram"], correctIndex: 0, category: "India", difficulty: 2, note: "Plenty of people still say Gurgaon out of habit." },
-    { text: "How many languages are listed in the Eighth Schedule of India's Constitution?", answer: "Twenty-two", options: ["Fourteen", "Eighteen", "Twenty-two", "Twenty-eight"], correctIndex: 2, category: "India", difficulty: 3 },
+    { text: "How many languages are listed in the Eighth Schedule of India's Constitution?", answer: "Twenty-two", options: ["Fourteen", "Eighteen", "Twenty-two", "Twenty-eight"], correctIndex: 2, category: "India", difficulty: 3, note: "It started at 14 in 1950 and has been amended upward since. Being on the list affects official use and exams, which is why adding a language to it is still a live political question." },
     { text: "The Charminar monument stands in which Indian city?", answer: "Hyderabad", options: ["Hyderabad", "Bhopal", "Lucknow", "Jaipur"], correctIndex: 0, category: "India", difficulty: 1 },
     { text: "Roughly how many people work for Indian Railways?", answer: "More than a million", options: ["About 50,000", "About 200,000", "More than ten million", "More than a million"], correctIndex: 3, category: "India", difficulty: 3, note: "One of the largest employers on the planet." },
 
@@ -96,7 +96,7 @@
     { text: "What does the phrase yum cha literally mean?", answer: "Drink tea", options: ["Eat well", "Drink tea", "Small plates", "Morning meal"], correctIndex: 1, category: "China", difficulty: 2, note: "The tea is the point. Dim sum is what comes with it." },
     { text: "Which of these was invented in ancient China?", answer: "Paper", options: ["Paper", "Glass", "Concrete", "The wheel"], correctIndex: 0, category: "China", difficulty: 1 },
     { text: "Can the Great Wall of China be seen from space with the naked eye?", answer: "No, it is far too narrow", options: ["Yes, even from the Moon", "Yes, from low orbit with the naked eye", "No, it is far too narrow", "Only when it snows"], correctIndex: 2, category: "China", difficulty: 2, note: "It is long, but only a few metres wide. Astronauts have confirmed you cannot pick it out unaided." },
-    { text: "Which Chinese city's name means above the sea?", answer: "Shanghai", options: ["Beijing", "Shanghai", "Shenzhen", "Tianjin"], correctIndex: 1, category: "China", difficulty: 3 },
+    { text: "Which Chinese city's name means above the sea?", answer: "Shanghai", options: ["Beijing", "Shanghai", "Shenzhen", "Tianjin"], correctIndex: 1, category: "China", difficulty: 3, note: "Shang hai, above the sea. Beijing is northern capital and Nanjing is southern capital, so a surprising number of Chinese city names are just directions on a map." },
 
     /* ---------- Sydney vs Gurugram ---------- */
     { text: "Which Delhi Metro line runs all the way into Gurugram?", answer: "The Yellow Line", options: ["The Blue Line", "The Yellow Line", "The Red Line", "The Violet Line"], correctIndex: 1, category: "Sydney vs Gurugram", difficulty: 2, note: "It ends at Millennium City Centre Gurugram, the station most people still call HUDA City Centre." },
