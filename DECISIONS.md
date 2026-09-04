@@ -589,3 +589,18 @@ inside the ring.
   on the shared screen means auditing every path that can change it.
 - **Not built, on purpose:** a session countdown clock for participants. It would turn a warm hour into a
   deadline. Session progress ("Activity 2 of 5") and late-joiner context are still worth doing.
+
+## 2026-09-04 — Fair turns and a difficulty floor
+- **Gibberish moved from open floor to turns, with the speed bonus on.** Open floor rewards the best
+  connection, not the best answer: over Zoom, whoever sounds first often was not first. Turns remove the
+  argument; the speed bonus stops a turn becoming a thirty second deliberation while everyone waits.
+- **difficultyMin 2 on the six knowledge games.** Nothing trivial gets drawn.
+- **Checked the banks before raising the floor.** A floor that starves the content bank produces a
+  readiness warning on the morning of the session. Tightest margin is gibberish, 36 available against 8
+  drawn. With `unusedOnly` on, a raised floor also roughly halves how many sessions the bank lasts.
+- **rankit, charades and wyr keep the full bank on purpose.** rankit has 7 items at medium or harder and
+  draws 3. In charades difficulty is how hard a word is to ACT. wyr has no difficulty filter at all; it
+  rates absurdity. **Read what a field means in each game before filtering on it** - the same key does
+  not mean the same thing everywhere, and a blanket change would have quietly made three games worse.
+- **A wrong test assertion is not a bug.** The first run failed on `wyr.difficultyMin === 1`; the truth is
+  the setting does not exist there. Fixed the assertion, not the game.

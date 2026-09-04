@@ -1,5 +1,42 @@
 # HANDOVER — team_games
 
+## Where We Are (2026-09-04 session, part 19 · fair turns, harder questions)
+Venkat: "we don't want people fighting over, we should give fair chance for each team, ensure that the
+questions are not easy." Both done.
+
+**Turns everywhere they apply.** Gibberish was the last game on open floor, where the loudest voice and
+the best connection win. It now takes turns like the quiz: a miss passes on at half points, and a quick
+answer earns the speed bonus. Over Zoom audio lag means whoever sounds first often was not, so open floor
+was an argument waiting to happen. The quiz already worked this way and was left alone.
+
+**A difficulty floor of 2 on the six knowledge games** (quiz, gibberish, factfiction, wronganswers,
+balderdash, fivesec). Nothing trivial gets drawn. Checked every bank still holds enough at the raised
+floor before shipping it, because a floor that starves the bank means a readiness warning on the day:
+the tightest is gibberish at 36 available against 8 drawn.
+
+**Three games deliberately keep the full bank**, because difficulty does not mean "harder question"
+there. `rankit` has only 7 items at medium or harder and draws 3, so a floor would empty it in two
+sessions. In `charades` difficulty is how hard the word is to **act**. `wyr` has no difficulty filter at
+all; its rating is how absurd the dilemma is. Raising those would have made the games worse while looking
+like progress.
+
+Side effect worth knowing: gibberish scores by difficulty, so its questions are now worth **15 and 20**
+rather than 10. The quiz uses flat points and is unchanged.
+
+Verified live, not just in tests: gibberish drew 2,2,2,2,2,3,3,3, the console read "Thunder Llamas to
+answer, worth 15" with a real 8 second bonus window, the participant window named the team whose turn it
+was, and readiness reported every activity has enough content. Suite 412 -> **435**, edge 58. Four
+assertions fail against the old defaults, checked by reverting.
+
+**Exact Next Step: the Zoom call, still.** Now with a third thing to judge: whether a floor of 2 is
+actually the right level for this team, or whether it tips from "not easy" into "nobody knows". That is a
+taste call only a real room can settle, and it is one number per game in Settings -> Activity defaults.
+
+**Files this part:** `src/games/{quiz,gibberish,factfiction,wronganswers,balderdash,fivesec}.js`,
+`tests/run.js`, rebuilt `team-connect.html` + `dev.html`.
+**What is blocked:** nothing.
+**Session cost:** roughly $4-6 USD.
+
 ## Where We Are (2026-09-04 session, part 18 · team rosters on the participant screen)
 Venkat: the presentation window should name each team's members, otherwise people get confused.
 Agreed, and it turned out the machinery was already built and unused. `90-presentation.js` has a full
