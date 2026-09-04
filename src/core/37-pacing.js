@@ -129,7 +129,11 @@
       const trim = P.dryRun(s, "shorten", st.over);
       if (trim > 0.4) out.push({ id: "shorten", disruption: 2, label: "Shorten the remaining activities", detail: `Trims question and round counts across ${U.plural(flex.length, "activity", "activities")} until the session fits.`, saves: trim });
       const one = P.dryRun(s, "fewer");
-      if (one > 0.4) out.push({ id: "fewer", disruption: 2, label: "One less question in each remaining activity", detail: `Takes a single item off ${U.plural(flex.length, "activity", "activities")}.`, saves: one });
+      /* Trimming to fit and taking one item off each often land on the same number. Two options
+         that save the same minutes and read almost alike are a decision to make under pressure
+         with nothing to decide, so offer only the fit-targeted one when they converge. */
+      const sameAsTrim = trim > 0.4 && Math.round(one) === Math.round(trim);
+      if (one > 0.4 && !sameAsTrim) out.push({ id: "fewer", disruption: 2, label: "One less question in each remaining activity", detail: `Takes a single item off ${U.plural(flex.length, "activity", "activities")}.`, saves: one });
     }
     if (next) out.push({ id: "skipNext", disruption: 4, label: `Skip the next activity (${next.title})`, detail: "It stays in the run sheet as skipped and can be reset later.", saves: TCL.Duration.activity(next, s) + TCL.Duration.TRANSITION_MIN });
     if (st.over > 0) out.push({ id: "autoFinish", disruption: 5, label: "Finish on time automatically", detail: "Drops breaks, then trims activities, then skips as a last resort. Never changes the activity that is running.", saves: st.over });
