@@ -659,6 +659,32 @@ async function seedSession(page, opts) {
     await page.close();
   });
 
+  /* Regression: the rehearsal offered "Shorten the remaining activities" and "One less question
+     in each remaining activity" as two options saving an identical 23 min. Found by driving the
+     live app during the rehearsal on 2026-09-04. */
+  await test("running late: no two options save the same minutes", async () => {
+    const page = await fresh(context, { clear: true });
+    const r = await page.evaluate(() => {
+      /* Every game on the run sheet against a 60 min target: the state that produced the pair. */
+      TCL.Rehearsal.start();
+      const opts = TCL.Pacing.options();
+      const trims = opts.filter(o => o.id === "shorten" || o.id === "fewer");
+      const rounded = trims.map(o => Math.round(o.saves));
+      /* And a session where taking one item off is the only trim on offer: it must survive. */
+      TCL.Rehearsal.end();
+      const s = TCL.Session.create({ name: "Distinct", targetMinutes: 45, participants: TCL.Teams.SAMPLE_ROSTER.slice(0, 6) });
+      TCL.Teams.build(2);
+      ["quiz", "gibberish", "factfiction"].forEach(g => TCL.Session.addActivity("game", g));
+      s.status = "live"; TCL.Session.touch();
+      return { ids: opts.map(o => o.id), rounded, distinctIds: TCL.Pacing.options().map(o => o.id), errors: window.__tclErrors };
+    });
+    ok(r.ids.includes("shorten"), "the fit-targeted trim is still offered: " + r.ids.join(","));
+    ok(new Set(r.rounded).size === r.rounded.length, "no two trim options save the same minutes: " + r.rounded.join(","));
+    ok(r.distinctIds.includes("fewer"), "one-less survives when it is the only trim on offer: " + r.distinctIds.join(","));
+    ok(r.errors.length === 0, "no runtime errors");
+    await page.close();
+  });
+
   await test("rehearsal: sample people, fast timers, no content burn, no real scores, self-deleting", async () => {
     const page = await fresh(context, { clear: true });
     const r = await page.evaluate(() => {
