@@ -1475,7 +1475,10 @@ details.menu.left .menu-pop { right: auto; left: 0; }
       chosen = chosen.concat(U.shuffle(pool.filter(x => !ids.has(x.id))).slice(0, count - chosen.length));
     }
     if (q.order === "progressive") chosen = U.sortBy(chosen, x => x.difficulty || 2);
-    return { items: chosen, shortfall: Math.max(0, count - chosen.length), available, pool: pool.length, toppedUp: q.unusedOnly && unused.length < count };
+    /* fresh: how many never-used items still match. The readiness check reports it, because a team
+       that plays every month starts seeing repeats long before anything looks broken. */
+    return { items: chosen, shortfall: Math.max(0, count - chosen.length), available, pool: pool.length,
+      fresh: q.unusedOnly ? unused.length : available, toppedUp: q.unusedOnly && unused.length < count };
   };
 
   /* Import / export */
@@ -1879,16 +1882,21 @@ details.menu.left .menu-pop { right: auto; left: 0; }
     }
 
     /* 4. Content available */
-    const short = [];
+    const short = [], repeating = [];
     s.runSheet.filter(a => a.kind === "game").forEach(a => {
       const g = TCL.Games.get(a.gameId); if (!g || !g.contentGame) return;
       const st = TCL.Runner.settingsOf(a);
       const want = Number(st.count || st.rounds || st.turns || st.items || 0);
       if (!want) return;
-      const sel = TCL.Content.select({ game: g.contentGame, count: want, categories: st.categories, difficultyMin: st.difficultyMin, difficultyMax: st.difficultyMax });
+      const sel = TCL.Content.select({ game: g.contentGame, count: want, categories: st.categories, difficultyMin: st.difficultyMin, difficultyMax: st.difficultyMax, unusedOnly: st.unusedOnly });
       if (sel.pool < want) short.push(`${a.title}: ${sel.pool} of ${want} items match the filters`);
+      /* Running out of unused content is not an error, it tops up from what has been played before.
+         But a team that meets every month will notice the repeats before the facilitator does, so say
+         it here rather than letting the room be the thing that discovers it. */
+      else if (sel.toppedUp) repeating.push(`${a.title}: ${sel.fresh} new ${sel.fresh === 1 ? "item" : "items"} left for ${want} rounds, so some will repeat`);
     });
     if (short.length) out.push(row("content", "Content available", "warn", short.join(" · "), "content"));
+    else if (repeating.length) out.push(row("content", "Content available", "warn", repeating.join(" · ") + ". Add your own in the Content Manager, or widen the difficulty range.", "content"));
     else out.push(row("content", "Content available", "ok", "Every activity has enough content for its settings."));
 
     /* 5. Fits the target */

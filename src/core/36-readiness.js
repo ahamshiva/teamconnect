@@ -57,16 +57,21 @@
     }
 
     /* 4. Content available */
-    const short = [];
+    const short = [], repeating = [];
     s.runSheet.filter(a => a.kind === "game").forEach(a => {
       const g = TCL.Games.get(a.gameId); if (!g || !g.contentGame) return;
       const st = TCL.Runner.settingsOf(a);
       const want = Number(st.count || st.rounds || st.turns || st.items || 0);
       if (!want) return;
-      const sel = TCL.Content.select({ game: g.contentGame, count: want, categories: st.categories, difficultyMin: st.difficultyMin, difficultyMax: st.difficultyMax });
+      const sel = TCL.Content.select({ game: g.contentGame, count: want, categories: st.categories, difficultyMin: st.difficultyMin, difficultyMax: st.difficultyMax, unusedOnly: st.unusedOnly });
       if (sel.pool < want) short.push(`${a.title}: ${sel.pool} of ${want} items match the filters`);
+      /* Running out of unused content is not an error, it tops up from what has been played before.
+         But a team that meets every month will notice the repeats before the facilitator does, so say
+         it here rather than letting the room be the thing that discovers it. */
+      else if (sel.toppedUp) repeating.push(`${a.title}: ${sel.fresh} new ${sel.fresh === 1 ? "item" : "items"} left for ${want} rounds, so some will repeat`);
     });
     if (short.length) out.push(row("content", "Content available", "warn", short.join(" · "), "content"));
+    else if (repeating.length) out.push(row("content", "Content available", "warn", repeating.join(" · ") + ". Add your own in the Content Manager, or widen the difficulty range.", "content"));
     else out.push(row("content", "Content available", "ok", "Every activity has enough content for its settings."));
 
     /* 5. Fits the target */

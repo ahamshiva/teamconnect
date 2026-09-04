@@ -119,7 +119,10 @@
       chosen = chosen.concat(U.shuffle(pool.filter(x => !ids.has(x.id))).slice(0, count - chosen.length));
     }
     if (q.order === "progressive") chosen = U.sortBy(chosen, x => x.difficulty || 2);
-    return { items: chosen, shortfall: Math.max(0, count - chosen.length), available, pool: pool.length, toppedUp: q.unusedOnly && unused.length < count };
+    /* fresh: how many never-used items still match. The readiness check reports it, because a team
+       that plays every month starts seeing repeats long before anything looks broken. */
+    return { items: chosen, shortfall: Math.max(0, count - chosen.length), available, pool: pool.length,
+      fresh: q.unusedOnly ? unused.length : available, toppedUp: q.unusedOnly && unused.length < count };
   };
 
   /* Import / export */

@@ -663,6 +663,37 @@ async function seedSession(page, opts) {
     await page.close();
   });
 
+  await test("readiness warns before a returning team starts seeing repeats", async () => {
+    const page = await fresh(context, { clear: true });
+    const r = await page.evaluate(() => {
+      TCL.state.content.usage = {};
+      const runs = [];
+      /* Play the same quiz over and over, the way a team that meets monthly would. Content is not
+         exhausted so much as recycled: select() tops up from played items rather than failing, which
+         is right, but the room notices the repeat before the facilitator does unless it is said. */
+      for (let i = 1; i <= 7; i++) {
+        const s = TCL.Session.create({ name: "R" + i, participants: TCL.Teams.SAMPLE_ROSTER.slice(0, 6) });
+        TCL.Teams.build(2);
+        const a = TCL.Session.addActivity("game", "quiz");
+        s.status = "live";
+        const st = TCL.Runner.settingsOf(a);
+        const row = TCL.Readiness.check(s).find(x => x.id === "content");
+        const sel = TCL.Content.select({ game: "quiz", count: st.count, difficultyMin: st.difficultyMin, difficultyMax: st.difficultyMax, unusedOnly: true });
+        runs.push({ level: row.level, fresh: sel.fresh, toppedUp: !!sel.toppedUp, mentions: row.detail.indexOf("repeat") >= 0 });
+        TCL.Content.markUsed(sel.items.map(x => x.id));
+      }
+      return { runs, errors: window.__tclErrors };
+    });
+    const firstWarn = r.runs.findIndex(x => x.level === "warn");
+    const firstRecycle = r.runs.findIndex(x => x.toppedUp);
+    ok(r.runs[0].level === "ok", "a fresh bank reports ok");
+    ok(firstRecycle > 0 && firstWarn === firstRecycle, "the warning arrives on the very run that starts recycling, not later: warn at " + firstWarn + ", recycling at " + firstRecycle);
+    ok(r.runs[firstWarn].mentions, "and it says the word repeat, so the facilitator knows what they are being told");
+    ok(r.runs.slice(0, firstWarn).every(x => x.level === "ok"), "no crying wolf while content is still fresh");
+    ok(r.errors.length === 0, "no runtime errors");
+    await page.close();
+  });
+
   await test("knowledge games take turns and never draw an easy item", async () => {
     const page = await fresh(context, { clear: true });
     const KNOWLEDGE = ["quiz", "gibberish", "factfiction", "wronganswers", "balderdash", "fivesec"];
