@@ -659,6 +659,37 @@ async function seedSession(page, opts) {
     await page.close();
   });
 
+  await test("the lobby names each team's members, and keeps them current", async () => {
+    const page = await fresh(context, { clear: true });
+    await seedSession(page, { games: ["factfiction"] });
+    const r = await page.evaluate(() => {
+      const s = TCL.session();
+      TCL.Teams.build(3);
+      TCL.Session.touch();
+      const lobby = TCL.Presenter.buildPayload();
+      const roster = lobby.blocks.find(b => b.type === "teams");
+      const named = lobby.teams.every(t => t.members.length > 0);
+      /* Rebalancing has to reach the participant window. It only ever called touch(), which
+         persisted without pushing, so the window kept showing teams that no longer existed. */
+      let pushed = null;
+      TCL.Presenter.push = (function (orig) { return function (f) { pushed = TCL.Presenter.buildPayload().teams.map(t => t.name); return orig.call(TCL.Presenter, f); }; })(TCL.Presenter.push);
+      TCL.Teams.build(2);
+      TCL.Session.touch();
+      /* Individual mode has no teams to name. */
+      s.teamMode = "individual";
+      const solo = TCL.Presenter.buildPayload();
+      return { hasRoster: !!roster, named, teamCount: lobby.teams.length, screen: lobby.screen,
+        pushedNames: pushed, soloRoster: solo.blocks.some(b => b.type === "teams"), errors: window.__tclErrors };
+    });
+    ok(r.screen === "lobby", "the pre-activity screen is the lobby");
+    ok(r.hasRoster && r.teamCount === 3, "the lobby carries a roster block for all 3 teams");
+    ok(r.named, "every team lists its members");
+    ok(r.pushedNames && r.pushedNames.length === 2, "rebalancing pushes the new roster to the participant window: " + (r.pushedNames || []).join(", "));
+    ok(!r.soloRoster, "individual mode shows no roster");
+    ok(r.errors.length === 0, "no runtime errors");
+    await page.close();
+  });
+
   /* Regression: the rehearsal offered "Shorten the remaining activities" and "One less question
      in each remaining activity" as two options saving an identical 23 min. Found by driving the
      live app during the rehearsal on 2026-09-04. */
