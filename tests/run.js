@@ -738,6 +738,40 @@ async function seedSession(page, opts) {
     await page.close();
   });
 
+  await test("the facilitator can keep an activity going past its configured count", async () => {
+    const page = await fresh(context, { clear: true });
+    await seedSession(page, { games: ["quiz"], settings: { count: 2 } });
+    const r = await page.evaluate(() => {
+      const a = TCL.session().runSheet[0];
+      TCL.Runner.start(a.id);
+      TCL.Runner.act("next"); TCL.Runner.act("next");
+      const atEnd = { items: TCL.Runner.ctx().state.items.length, finished: TCL.Runner.ctx().state.finished };
+      /* The configured count is a plan, not a cage. */
+      TCL.Runner.act("more");
+      const st = TCL.Runner.ctx().state;
+      const after = { items: st.items.length, index: st.index, finished: st.finished, timer: TCL.Timers.get("round").status };
+      /* Capture both at the same instant: st is a live reference and the loop below moves the index. */
+      const shownToTheRoom = (TCL.Presenter.buildPayload().blocks.find(b => b.type === "prompt") || {}).text;
+      const consoleQuestion = st.items[st.index].text;
+      /* Keep going until the matching content is genuinely spent, then stop and say so. */
+      let toast = null, guard = 0;
+      TCL.on("ui:toast", t => { toast = t.text; });
+      while (guard++ < 200) { const b = TCL.Runner.ctx().state.items.length; TCL.Runner.act("more"); if (TCL.Runner.ctx().state.items.length === b) break; }
+      const end = TCL.Runner.ctx().state;
+      return { atEnd, after, shownToTheRoom, sameAsConsole: shownToTheRoom === consoleQuestion,
+        exhaustedCleanly: guard < 200, toast, noRepeats: new Set(end.contentIds).size === end.contentIds.length,
+        grew: end.items.length > 2, errors: window.__tclErrors };
+    });
+    ok(r.atEnd.items === 2 && r.atEnd.finished, "the activity finishes at its configured count");
+    ok(r.after.items === 3 && !r.after.finished && r.after.index === 2, "keep going adds one more and un-finishes the activity: " + JSON.stringify(r.after));
+    ok(r.after.timer === "running", "and the clock starts on the new item rather than sitting idle");
+    ok(r.sameAsConsole, "the room sees the added question too: " + r.shownToTheRoom);
+    ok(r.grew && r.noRepeats, "it can be used repeatedly and never repeats an item inside the activity");
+    ok(r.exhaustedCleanly && /Nothing unused left/.test(r.toast || ""), "when the matching content runs out it stops and says so: " + r.toast);
+    ok(r.errors.length === 0, "no runtime errors");
+    await page.close();
+  });
+
   await test("a count can be typed, not only dragged", async () => {
     const page = await fresh(context, { clear: true });
     await seedSession(page, { games: ["quiz"] });

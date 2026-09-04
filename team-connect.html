@@ -4434,6 +4434,20 @@ details.menu.left .menu-pop { right: auto; left: 0; }
         if (st.index >= st.items.length - 1) { st.finished = true; ctx.timer.stop(); return; }
         st.index += 1; st.revealed = false; st.round = (st.round || 0) + 1; onEnter(ctx);
       },
+      /* The room is enjoying it and the facilitator wants another. The configured count is a plan,
+         not a cage: pull one more item that matches this activity's own filters and carry on. It
+         never repeats inside the activity, because freshItem excludes what has already been drawn. */
+      more(ctx) {
+        const st = ctx.state;
+        const it = K.freshItem(ctx, contentGame);
+        if (!it) { TCL.emit("ui:toast", { text: "Nothing unused left that matches this activity's categories and difficulty.", kind: "warn" }); return; }
+        st.items.push(it);
+        st.index = st.items.length - 1;
+        st.finished = false;
+        st.revealed = false;
+        st.round = (st.round || 0) + 1;
+        onEnter(ctx);
+      },
       prev(ctx) { const st = ctx.state; if (st.index > 0) { st.index -= 1; st.revealed = false; st.finished = false; onEnter(ctx); } },
       skip(ctx) { const st = ctx.state; st.skipped.push(st.index); ctx.log("Skipped item " + (st.index + 1)); this.next(ctx); },
       /* Nobody answered. Reveals so the room still learns the answer, scores nothing,
@@ -4506,9 +4520,10 @@ details.menu.left .menu-pop { right: auto; left: 0; }
       next: `<button class="btn big" data-act="next">${nextLabel} ${UI.icon("next")} <span class="kbd">N</span></button>`,
       nextGhost: `<button class="btn ghost" data-act="next">${nextLabel} ${UI.icon("next")} <span class="kbd">N</span></button>`,
       reopen: `<button class="btn ghost" data-act="reopen">Reopen last item</button>`,
+      more: `<button class="btn ghost" data-act="more">${UI.icon("plus")} Keep going</button>`,
     };
     let main = "";
-    if (st.finished) main = B.reopen;
+    if (st.finished) main = B.more + B.reopen;
     else if (stage === "timer") main = B.timer + (canReveal ? B.revealGhost : "") + B.nextGhost;
     else if (stage === "reveal") main = B.reveal + B.nextGhost;
     else main = B.next + (canReveal && st.revealed ? B.hide : "");
@@ -4516,6 +4531,7 @@ details.menu.left .menu-pop { right: auto; left: 0; }
       stage !== "timer" && hasTimer ? { label: ctx.timer.idle() ? "Start the timer" : "Restart the timer", icon: "clock", attr: 'data-act="startTimer"' } : null,
       hasTimer && !ctx.timer.idle() ? { label: "Give them 10 more seconds", icon: "clock", attr: 'data-act="grace"' } : null,
       { label: "Previous item", icon: "prev", attr: 'data-act="prev"' + (st.index === 0 ? " disabled" : "") },
+      { label: "Keep going: add one more", icon: "plus", attr: 'data-act="more"' },
       st.finished ? null : { sep: true },
       st.finished ? null : { label: "Nobody answered", icon: "x", attr: 'data-act="noResponse"' },
       st.finished ? null : { label: "Technical problem: swap it, keep the question", icon: "shuffle", attr: 'data-act="technical"' },
@@ -4531,7 +4547,7 @@ details.menu.left .menu-pop { right: auto; left: 0; }
       : "";
     return `${timeUp}<div class="ctl-row primary-row" style="margin-top:14px">${main}${menu}${opts.extra || ""}</div>`;
   };
-  K.finished = (ctx, text) => `<div class="stage"><span class="eyebrow gold">Finished</span><div class="prompt">${esc(text || "That is the last one.")}</div><p class="muted">Mark the activity complete (top right) to see the round summary, or reopen the last item.</p><div class="ctl-row" style="margin-top:14px"><button class="btn ghost" data-act="reopen">Reopen last item</button></div></div>`;
+  K.finished = (ctx, text) => `<div class="stage"><span class="eyebrow gold">Finished</span><div class="prompt">${esc(text || "That is the last one.")}</div><p class="muted">If the room is enjoying it, keep going: that adds one more and the activity carries on. Otherwise mark it complete (top right) for the round summary.</p><div class="ctl-row" style="margin-top:14px"><button class="btn ghost" data-act="more">${UI.icon("plus")} Keep going</button><button class="btn ghost" data-act="reopen">Reopen last item</button></div></div>`;
   K.awardRow = function (ctx, action, points, opts) {
     opts = opts || {};
     if (!ctx.scoringEnabled) return `<div class="dim small" style="margin-top:8px">Scoring is off for this activity.</div>`;
