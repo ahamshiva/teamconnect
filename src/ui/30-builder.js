@@ -10,7 +10,7 @@
   }
   function activitySummary(a, s) {
     if (a.kind !== "game") return `${a.settings.minutes} min · ${esc(a.settings.message || "")}`;
-    const g = TCL.Games.get(a.gameId); if (!g) return "Unknown game";
+    const g = TCL.Games.get(a.gameId); if (!g) return "Unknown activity";
     const st = TCL.Runner.settingsOf(a);
     try { return esc(g.summary ? g.summary(st, TCL.Duration.ctx(s)) : ""); } catch (e) { return ""; }
   }
@@ -90,7 +90,7 @@
           return;
         }
         if (b.dataset.configure) { UI.configureActivity(b.dataset.configure); return; }
-        if (b.hasAttribute("data-autofit")) { const r = TCL.Duration.autoFit(s); TCL.Session.touch(); UI.toast(r.changed ? "Adjusted flexible games to fit the target" : r.reason, r.changed ? "ok" : "warn"); UI.render(); return; }
+        if (b.hasAttribute("data-autofit")) { const r = TCL.Duration.autoFit(s); TCL.Session.touch(); UI.toast(r.changed ? "Adjusted flexible activities to fit the target" : r.reason, r.changed ? "ok" : "warn"); UI.render(); return; }
         if (b.hasAttribute("data-save-preset")) { const name = await UI.prompt("Save run sheet as preset", "", s.name + " preset", { label: "Preset name" }); if (name) { TCL.Session.savePreset(name); UI.toast("Preset saved", "ok"); } return; }
         if (b.hasAttribute("data-load-preset")) { UI.presetPicker(); return; }
         if (b.hasAttribute("data-preview")) { UI.previewSession(); return; }
@@ -185,7 +185,7 @@
         const rnd = el.querySelector("#cfg-random"); if (rnd) rnd.addEventListener("click", () => { values.exactIds = []; values.selectionMode = "random"; refresh(); });
         if (!editable) el.querySelectorAll("#cfg input, #cfg select, #cfg textarea, #cfg-pick, #cfg-random").forEach(x => { x.disabled = true; });
       } });
-    if (v === "defaults") { if (editable) { a.settings = U.clone(TCL.Games.defaults(g)); TCL.Session.touch(); UI.toast(TCL.Games.hasOverrides(g.id) ? "Restored to your defaults for this game" : "Defaults restored"); } UI.render(); return; }
+    if (v === "defaults") { if (editable) { a.settings = U.clone(TCL.Games.defaults(g)); TCL.Session.touch(); UI.toast(TCL.Games.hasOverrides(g.id) ? "Restored to your defaults for this activity" : "Defaults restored"); } UI.render(); return; }
     if (v && editable) { TCL.Session.updateSettings(a.id, Object.assign(v, { exactIds: values.exactIds || [], selectionMode: values.selectionMode || "random" })); UI.render(); }
   };
   function contentSummary(values, g) {

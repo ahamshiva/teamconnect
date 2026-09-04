@@ -28,7 +28,7 @@ from the top bar when you need settings, manual score edits, activity resets and
 click next (exactly one gold button, and it moves as the round moves: start timer, then reveal, then next),
 and how to recover (the **More** menu on the header, and **If something breaks** in the sidebar during play).
 Everything else is one click away rather than on screen: planning tools disappear while a session is live,
-the game library sits behind **Add activity**, and each game's advanced settings are folded away until asked for.
+the activity library sits behind **Add activity**, and each activity's advanced settings are folded away until asked for.
 
 Everything is saved in the browser's localStorage after every change. Refresh, close and reopen: the Home
 screen offers to resume an unfinished session exactly where it stopped, timers included.
@@ -41,13 +41,13 @@ screen offers to resume an unfinished session exactly where it stopped, timers i
 | New Session wizard | Name, 30/45/60/custom minutes, preset, participants |
 | Participants | Add, paste, CSV import/export, present/absent, guests, locations, balanced or manual teams, lock |
 | Session Builder | One-column run sheet with drag reorder, live duration model and Auto-fit. The 17-activity library opens from **Add activity** with search and category filters rather than sitting on screen |
-| Per-game settings | Two tiers per instance: the everyday ones (count, time, categories, difficulty, format, scoring) are visible; the other dozen or so fold away under **Advanced settings** and still apply |
-| Game Library | 17 configurable activities (list below) |
+| Per-activity settings | Two tiers per instance: the everyday ones (count, time, categories, difficulty, format, scoring) are visible; the other dozen or so fold away under **Advanced settings** and still apply |
+| Activity Library | 17 configurable activities (list below) |
 | Content Manager | Search, filter, add, edit, duplicate, disable, usage history, packs, JSON/CSV import with validation, export, restore built-in |
 | Facilitator Console | One primary action at a time; prompt, clock and award buttons in the centre; session clock, round clock, private answer, scores and what is next in a narrow rail; everything else in a More menu |
 | Plan versus play | Before the session: Home, Builder, Participants, Library, Content, Settings. During it the sidebar becomes Now playing, Run sheet, Scores and a recovery menu. The run sheet is reachable without stopping the activity |
 | Readiness check | Ten pre-flight checks (people, teams, activities, content, fit, presentation, pop-ups, sound, Zoom steps, backup). Warnings can be overridden; blockers cannot |
-| Rehearsal mode | A throwaway practice session: sample people, 5x faster timers, jump to any game, no real scores, no questions used up, deletes itself when you end it |
+| Rehearsal mode | A throwaway practice session: sample people, 5x faster timers, jump to any activity, no real scores, no questions used up, deletes itself when you end it |
 | Running late | Live projection of the finish time and ranked fixes: drop the break, shorten activities, one less question each, skip the next activity, finish on time automatically, or extend. Never touches the activity that is running |
 | Share safety | A persistent green/amber/red banner on every facilitator screen saying whether it is safe to share |
 | Breakout rooms | Activities that need them are labelled everywhere, with room-by-room assignments and a copyable Zoom broadcast message |
@@ -56,9 +56,9 @@ screen offers to resume an unfinished session exactly where it stopped, timers i
 | Round summary and Results | Per-activity points, podium, awards, tie handling, copy/download summary, session JSON |
 | Settings | Console mode, sound, silent mode, scoring defaults, finale style, large-text presentation, how to serve locally, backups |
 
-## Built-in games
+## Built-in activities
 
-| Game | Type | Zoom usage |
+| Activity | Type | Zoom usage |
 |---|---|---|
 | Who Said That? | Bonding | Facts pre-submitted; teams guess |
 | Would You Rather? | Energy | Reactions or chat to vote |
@@ -79,16 +79,16 @@ screen offers to resume an unfinished session exactly where it stopped, timers i
 | Wrong Answers Only | Creative | Funniest wrong answer by vote, then the real answer and a fun fact |
 
 Built-in content: 70 quiz questions, 64 dilemmas, 48 gibberish puzzles, 90 charades words, 90 five-second prompts,
-24 story topics, 16 ranking scenarios, 8 missions, 21 SVG scenes, plus prompts for the reflective games.
+24 story topics, 16 ranking scenarios, 8 missions, 21 SVG scenes, plus prompts for the reflective activities.
 All content is workplace-safe and written for an international team.
 
 ## Adding custom questions
 
-**In the app:** Content, then **Add item**. Pick the game, category, difficulty and fill the fields.
+**In the app:** Content, then **Add item**. Pick the activity, category, difficulty and fill the fields.
 Built-in items can be edited (saved as an override) or disabled; custom items can be deleted.
-"Restore built-in" undoes overrides and disables for a game.
+"Restore built-in" undoes overrides and disables for an activity.
 
-**Import JSON:** an array of items or an export file. Each item needs `game` plus the game's required fields:
+**Import JSON:** an array of items or an export file. Each item needs `game` (the stored field name, unchanged) plus that activity's required fields:
 
 ```json
 [
@@ -102,11 +102,12 @@ Built-in items can be edited (saved as an override) or disabled; custom items ca
 ]
 ```
 
-**Import CSV:** header row with `game,text,answer,category,difficulty,...`. List fields (options, items, answer for
-rankit, clues, hints, use) are `|`-separated. Rows without a `game` column use the game selected in the import dialog.
+**Import CSV:** header row with `game,text,answer,category,difficulty,...`. The column is named `game`
+because that is the stored field name and what every export writes; `activity` is accepted as an alias. List fields (options, items, answer for
+rankit, clues, hints, use) are `|`-separated. Rows without a `game` column use the activity selected in the import dialog.
 Invalid rows are rejected with a row number and reason; valid rows still import.
 
-Game keys: `quiz`, `wyr`, `gibberish`, `charades`, `fivesec`, `truths`, `rankit`, `missions`, `images`, `factfiction`, `balderdash`, `wronganswers`,
+Activity keys (the value of the `game` field): `quiz`, `wyr`, `gibberish`, `charades`, `fivesec`, `truths`, `rankit`, `missions`, `images`, `factfiction`, `balderdash`, `wronganswers`,
 `whosaid` (backup prompts), `commonground`, `capsule`, `appreciation`, `captions`.
 
 Selecting exact items for a run-sheet activity: Session Builder, Configure, **Choose exact items**.
@@ -116,20 +117,20 @@ Selecting exact items for a run-sheet activity: Session Builder, Configure, **Ch
 **Settings** is the answer to "what can I change?". Everything global lives there. Two kinds of setting
 deliberately stay where they apply and are linked from Settings instead:
 
-- **Per-activity settings** (Session Builder → Configure). A run sheet can hold the same game twice with
+- **Per-activity settings** (Session Builder → Configure). A run sheet can hold the same activity twice with
   different settings, which is a feature, so these cannot be global without losing it.
 - **Participants, teams and team names** (Participants), because they change during the session.
 
-To stop reconfiguring the same game every time, use **Settings → Activity defaults**: set Rapid-Fire Quiz to
+To stop reconfiguring the same activity every time, use **Settings → Activity defaults**: set Rapid-Fire Quiz to
 8 questions at 25 seconds once, and every quiz you add from then on starts that way. Only the keys you
 changed are stored, existing run-sheet activities are untouched, and one tick applies the change to any
-activity of that game still waiting in the current session. Games with your own defaults are badged in the
+activity of that kind still waiting in the current session. Activities with your own defaults are badged in the
 library and the activity picker.
 
 ## Scoring is secondary
 
 Connection activities (Common Ground, Team Time Capsule, Appreciation Wall) ship with scoring **off**: the point
-of them is the conversation, not the points. Quizzes, gibberish, charades, five-second and the reveal games still
+of them is the conversation, not the points. Quizzes, gibberish, charades, five-second and the reveal activities still
 score normally. Any activity's scoring can be switched per instance in its Configure dialog.
 
 The session can end either way, set in Settings or from the toggle on the Results screen:
@@ -150,7 +151,7 @@ presentation, not on the results screen, not in the exported summary.
 4. Keep the console on your own screen. A banner sits on every facilitator screen: **green** when the presentation
    is connected and safe to share, **amber** while it is opening or after it drops, **red** when there is no
    presentation window at all. The participant window contains no navigation and no controls of any kind.
-5. If the presentation window closes or drops, the console shows **disconnected**; press Reconnect. The game keeps running.
+5. If the presentation window closes or drops, the console shows **disconnected**; press Reconnect. The activity keeps running.
 
 The presentation shows only: branding, activity name, public instructions, prompts, allowed images, public timers,
 team names, public scores (if enabled), answers after reveal, breakout instructions, round results and final standings.
@@ -162,7 +163,7 @@ Sync uses direct `postMessage` over the window handle (works on `file://`), with
 ## Keyboard
 
 Console: **Space** start/pause the round timer, **Ctrl/Cmd+Z** undo, **Shift+Ctrl/Cmd+Z** redo.
-Per game (shown on buttons): **R** reveal, **N** next, **1 to 4** award team, **C** correct, **P** pass, **G** go, **H** hit, **M** miss, **D** discussion or draw, **J** judge.
+Per activity (shown on buttons): **R** reveal, **N** next, **1 to 4** award team, **C** correct, **P** pass, **G** go, **H** hit, **M** miss, **D** discussion or draw, **J** judge.
 Shortcuts never fire while typing in a field.
 
 ## Development
@@ -185,7 +186,7 @@ node tests/shots.js     # visual QA screenshots into tests/artifacts/
 The runner borrows Playwright from wherever it is already installed: a plain `require` first (so
 `NODE_PATH` still works), then `~/.claude/skills/gstack/node_modules`, then a local `node_modules`.
 
-See `docs/02-schema.md` for the data model and game-plugin interface, `docs/03-tests.md` for the latest results,
+See `docs/02-schema.md` for the data model and activity-plugin interface, `docs/03-tests.md` for the latest results,
 `docs/04-running.md` for `file://` versus `http://localhost`.
 
 ## Limitations

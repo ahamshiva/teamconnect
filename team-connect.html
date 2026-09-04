@@ -1261,7 +1261,7 @@ details.menu.left .menu-pop { right: auto; left: 0; }
   Scoring.MODELS = [
     { id: "balanced", short: "Balanced", label: "Balanced: every scored activity is worth up to 100", help: "Each activity's points are scaled so the best team in it earns 100. A long quiz counts the same as a short game." },
     { id: "placement", short: "Placement", label: "Placement: 30 / 20 / 10 per activity", help: "Only the order within each activity matters. Ties share the higher award." },
-    { id: "raw", short: "Raw points", label: "Raw: the points the games award", help: "Whatever each game gives. Simple, but a big activity can decide the session." },
+    { id: "raw", short: "Raw points", label: "Raw: the points the activities award", help: "Whatever each activity gives. Simple, but a big activity can decide the session." },
   ];
   Scoring.PLACEMENT = [30, 20, 10];
   Scoring.model = function (session) { const s = session || TCL.session(); return (s && s.scoreModel) || "raw"; };
@@ -1500,7 +1500,7 @@ details.menu.left .menu-pop { right: auto; left: 0; }
       const row = i + 1;
       if (!raw || typeof raw !== "object") { errors.push({ row, message: "Not an object" }); return; }
       const game = String(raw.game || "").trim();
-      if (!known.has(game)) { errors.push({ row, message: `Unknown game "${game || "(blank)"}". Known: ${Array.from(known).join(", ")}` }); return; }
+      if (!known.has(game)) { errors.push({ row, message: `Unknown activity "${game || "(blank)"}". Known: ${Array.from(known).join(", ")}` }); return; }
       const spec = fieldSpecs[game];
       const item = { game, category: String(raw.category || "General").trim() || "General", difficulty: U.clamp(Number(raw.difficulty) || 2, 1, 3) };
       let ok = true;
@@ -1527,7 +1527,9 @@ details.menu.left .menu-pop { right: auto; left: 0; }
     const rows = U.parseCSV(text);
     if (rows.length < 2) return { added: 0, errors: [{ row: 0, message: "CSV needs a header row and at least one data row" }] };
     const header = rows[0].map(h => h.trim());
-    const items = rows.slice(1).map(r => { const o = {}; header.forEach((h, i) => { o[h] = r[i] == null ? "" : r[i]; }); if (game && !o.game) o.game = game; return o; });
+    /* The column is named "game" in every CSV this app has ever exported, so that keeps working.
+       "activity" is accepted as an alias because that is the word the interface now uses. */
+    const items = rows.slice(1).map(r => { const o = {}; header.forEach((h, i) => { o[h] = r[i] == null ? "" : r[i]; }); if (!o.game && o.activity) o.game = o.activity; if (game && !o.game) o.game = game; return o; });
     return Content.importItems(items);
   };
   Content.importItems = function (items) {
@@ -1703,7 +1705,7 @@ details.menu.left .menu-pop { right: auto; left: 0; }
     const out = [];
     const n = Teams.present(s).length;
     if (n === 0) out.push({ level: "error", message: "No participants are marked present." });
-    else if (n === 1) out.push({ level: "warn", message: "Only one participant is present. Most games need at least two." });
+    else if (n === 1) out.push({ level: "warn", message: "Only one participant is present. Most activities need at least two." });
     if (s.teamMode === "teams") {
       if (!s.teams.length) out.push({ level: "warn", message: "No teams yet. Create teams or switch to individual mode." });
       s.teams.forEach(t => { if (!Teams.presentMembers(t, s).length) out.push({ level: "warn", message: `Team "${t.name}" has nobody present.` }); });
@@ -2661,7 +2663,7 @@ details.menu.left .menu-pop { right: auto; left: 0; }
     if (cur && cur.id !== a.id && cur.status === "active") return { ok: false, reason: `"${cur.title}" is still active. Pause or end it first.` };
     if (a.kind === "game") {
       const g = TCL.Games.get(a.gameId);
-      if (!g) return { ok: false, reason: "Unknown game." };
+      if (!g) return { ok: false, reason: "Unknown activity." };
       const problems = Runner.validate(a).filter(p => p.level === "error");
       if (problems.length && !a.forceStart) return { ok: false, reason: problems.map(p => p.message).join(" "), problems };
     }
@@ -2698,7 +2700,7 @@ details.menu.left .menu-pop { right: auto; left: 0; }
 
   Runner.validate = function (a) {
     const s = TCL.session();
-    const g = TCL.Games.get(a.gameId); if (!g) return [{ level: "error", message: "Unknown game" }];
+    const g = TCL.Games.get(a.gameId); if (!g) return [{ level: "error", message: "Unknown activity" }];
     const settings = Runner.settingsOf(a);
     const ctx = { participants: TCL.Teams.present(s), teams: s.teams, teamMode: s.teamMode, session: s, settings, content: q => TCL.Content.select(Object.assign({ game: g.contentGame }, q)) };
     const out = [];
@@ -5875,7 +5877,7 @@ details.menu.left .menu-pop { right: auto; left: 0; }
     { id: "home", label: "Home", icon: "home", always: true },
     { id: "builder", label: "Session Builder", icon: "builder" },
     { id: "participants", label: "Participants", icon: "people" },
-    { id: "library", label: "Game Library", icon: "library" },
+    { id: "library", label: "Activity Library", icon: "library" },
     { id: "content", label: "Content", icon: "content", always: true, advanced: true },
     { id: "settings", label: "Settings", icon: "settings", always: true },
   ];
@@ -5938,7 +5940,7 @@ details.menu.left .menu-pop { right: auto; left: 0; }
     const s = TCL.session();
     if (!s || !s.rehearsal) return "";
     return `<div class="rehearsal-bar">${UI.icon("play")}<div><b>REHEARSAL</b> · sample people, ${TCL.Rehearsal.SPEED}× faster timers, no real scores and no questions used up.</div>
-      <div class="btn-row"><button class="btn xs ghost" data-rehearse-jump>Jump to a game</button><button class="btn xs" data-rehearse-end>End rehearsal</button></div></div>`;
+      <div class="btn-row"><button class="btn xs ghost" data-rehearse-jump>Jump to an activity</button><button class="btn xs" data-rehearse-end>End rehearsal</button></div></div>`;
   };
 
   /* Planning tools disappear once the session goes live: during play the sidebar answers
@@ -6071,10 +6073,10 @@ details.menu.left .menu-pop { right: auto; left: 0; }
   };
   UI.rehearsalJump = async function () {
     const games = TCL.Games.list();
-    const v = await UI.modal({ title: "Jump straight to a game", wide: true, body: "<p>Starts that game immediately with sample people and short timers. Whatever is running now is reset.</p>",
+    const v = await UI.modal({ title: "Jump straight to an activity", wide: true, body: "<p>Starts that activity immediately with sample people and short timers. Whatever is running now is reset.</p>",
       form: `<div class="grid cols-3">${games.map(g => `<button type="button" class="card clickable" data-jump="${g.id}" style="text-align:left"><div class="row between"><span class="icon">${g.icon}</span></div><h3 style="margin-top:6px">${esc(g.name)}</h3><p>${esc(g.tagline || g.description)}</p></button>`).join("")}</div>`,
       buttons: [{ label: "Cancel", value: null }],
-      onOpen: el => el.addEventListener("click", ev => { const b = ev.target.closest("[data-jump]"); if (b) { UI.closeModal(); const r = TCL.Rehearsal.jumpTo(b.dataset.jump); if (!r.ok) UI.toast(r.reason || "Could not start that game", "warn"); TCL.go("console"); } }) });
+      onOpen: el => el.addEventListener("click", ev => { const b = ev.target.closest("[data-jump]"); if (b) { UI.closeModal(); const r = TCL.Rehearsal.jumpTo(b.dataset.jump); if (!r.ok) UI.toast(r.reason || "Could not start that activity", "warn"); TCL.go("console"); } }) });
     return v;
   };
 })();
@@ -6376,7 +6378,7 @@ details.menu.left .menu-pop { right: auto; left: 0; }
   }
   function activitySummary(a, s) {
     if (a.kind !== "game") return `${a.settings.minutes} min · ${esc(a.settings.message || "")}`;
-    const g = TCL.Games.get(a.gameId); if (!g) return "Unknown game";
+    const g = TCL.Games.get(a.gameId); if (!g) return "Unknown activity";
     const st = TCL.Runner.settingsOf(a);
     try { return esc(g.summary ? g.summary(st, TCL.Duration.ctx(s)) : ""); } catch (e) { return ""; }
   }
@@ -6456,7 +6458,7 @@ details.menu.left .menu-pop { right: auto; left: 0; }
           return;
         }
         if (b.dataset.configure) { UI.configureActivity(b.dataset.configure); return; }
-        if (b.hasAttribute("data-autofit")) { const r = TCL.Duration.autoFit(s); TCL.Session.touch(); UI.toast(r.changed ? "Adjusted flexible games to fit the target" : r.reason, r.changed ? "ok" : "warn"); UI.render(); return; }
+        if (b.hasAttribute("data-autofit")) { const r = TCL.Duration.autoFit(s); TCL.Session.touch(); UI.toast(r.changed ? "Adjusted flexible activities to fit the target" : r.reason, r.changed ? "ok" : "warn"); UI.render(); return; }
         if (b.hasAttribute("data-save-preset")) { const name = await UI.prompt("Save run sheet as preset", "", s.name + " preset", { label: "Preset name" }); if (name) { TCL.Session.savePreset(name); UI.toast("Preset saved", "ok"); } return; }
         if (b.hasAttribute("data-load-preset")) { UI.presetPicker(); return; }
         if (b.hasAttribute("data-preview")) { UI.previewSession(); return; }
@@ -6551,7 +6553,7 @@ details.menu.left .menu-pop { right: auto; left: 0; }
         const rnd = el.querySelector("#cfg-random"); if (rnd) rnd.addEventListener("click", () => { values.exactIds = []; values.selectionMode = "random"; refresh(); });
         if (!editable) el.querySelectorAll("#cfg input, #cfg select, #cfg textarea, #cfg-pick, #cfg-random").forEach(x => { x.disabled = true; });
       } });
-    if (v === "defaults") { if (editable) { a.settings = U.clone(TCL.Games.defaults(g)); TCL.Session.touch(); UI.toast(TCL.Games.hasOverrides(g.id) ? "Restored to your defaults for this game" : "Defaults restored"); } UI.render(); return; }
+    if (v === "defaults") { if (editable) { a.settings = U.clone(TCL.Games.defaults(g)); TCL.Session.touch(); UI.toast(TCL.Games.hasOverrides(g.id) ? "Restored to your defaults for this activity" : "Defaults restored"); } UI.render(); return; }
     if (v && editable) { TCL.Session.updateSettings(a.id, Object.assign(v, { exactIds: values.exactIds || [], selectionMode: values.selectionMode || "random" })); UI.render(); }
   };
   function contentSummary(values, g) {
@@ -6586,27 +6588,27 @@ details.menu.left .menu-pop { right: auto; left: 0; }
 
 
 /* ==== src/ui/40-library.js ==== */
-/* src/ui/40-library.js  Game Library browse view + Settings screen. */
+/* src/ui/40-library.js  Activity Library browse view + Settings screen. */
 (function () {
   "use strict";
   const TCL = window.TCL, U = TCL.util, esc = U.esc, UI = TCL.UI;
 
   UI.registerScreen("library", {
-    title: "Game Library",
+    title: "Activity Library",
     render() {
       const s = TCL.session();
       const games = TCL.Games.list();
       const cats = Array.from(new Set(games.map(g => g.category)));
       const ctx = TCL.Duration.ctx(s);
       return UI.shell(`<div class="content">
-        <div class="page-head"><div><span class="eyebrow gold">${games.length} activities</span><h1>Game Library</h1><p>Every activity is configurable per instance: rounds, timers, scoring, content and rules. Add any of them to the run sheet, as many times as you like.</p></div></div>
+        <div class="page-head"><div><span class="eyebrow gold">${games.length} activities</span><h1>Activity Library</h1><p>Every activity is configurable per instance: rounds, timers, scoring, content and rules. Add any of them to the run sheet, as many times as you like.</p></div></div>
         ${cats.map(c => `<h3 style="margin:22px 0 10px">${esc(c)}</h3><div class="grid cols-3">${games.filter(g => g.category === c).map(g => {
           const n = TCL.Content.all(g.contentGame).filter(x => x.enabled).length;
           return `<div class="card"><div class="row between"><span class="icon">${g.icon}</span><span class="chip mono">~${U.fmtMin(g.estimateMinutes(TCL.Games.defaults(g), ctx))} default</span></div>
             <h3>${esc(g.name)}</h3><p>${esc(g.description)}</p>
             <div class="meta">${g.modes.map(m => `<span class="badge">${m}</span>`).join("")}${g.contentGame ? `<span class="badge">${n} items</span>` : '<span class="badge">no content needed</span>'}${TCL.Games.defaults(g).scoringEnabled === false ? '<span class="badge">not scored</span>' : ""}${TCL.Games.hasOverrides(g.id) ? '<span class="badge ok">your defaults</span>' : ""}${TCL.Readiness.breakoutKind(g) === "always" ? '<span class="badge breakout">Breakout rooms required</span>' : TCL.Readiness.breakoutKind(g) === "sometimes" ? '<span class="badge breakout soft">Breakout rooms optional</span>' : ""}${g.needsZoom ? `<span class="badge">${esc(g.needsZoom)}</span>` : ""}</div>
             <div class="btn-row" style="margin-top:14px"><button class="btn sm" data-add="${g.id}" ${s ? "" : "disabled"}>${UI.icon("plus")} Add to run sheet</button>${g.contentGame ? `<button class="btn sm ghost" data-go="content" data-go-param="${g.contentGame}">Content</button>` : ""}</div></div>`; }).join("")}</div>`).join("")}
-      </div>`, { title: "Game Library" });
+      </div>`, { title: "Activity Library" });
     },
     mount(root) {
       root.addEventListener("click", e => { const b = e.target.closest("[data-add]"); if (b) { const a = TCL.Session.addActivity("game", b.dataset.add); UI.toast(`Added ${a.title} to the run sheet`, "ok"); UI.render(); } });
@@ -6620,11 +6622,11 @@ details.menu.left .menu-pop { right: auto; left: 0; }
   const SETTINGS_MAP = [
     { what: "Console mode, sound, confirmations", where: "Here · How the console behaves" },
     { what: "Presentation size, scores on screen", where: "Here · The participant screen" },
-    { what: "Default settings for each game", where: "Here · Activity defaults", note: "Applies to activities you add from now on" },
+    { what: "Default settings for each activity", where: "Here · Activity defaults", note: "Applies to activities you add from now on" },
     { what: "This session: name, length, scoring, how activities are weighed, finale", where: "Here · This session" },
     { what: "Participants, teams, team names, attendance", where: "Participants", go: "participants" },
     { what: "Which activities run, in what order, for how long", where: "Session Builder", go: "builder" },
-    { what: "Settings for one activity in the run sheet", where: "Session Builder · Configure", go: "builder", note: "Per instance, so the same game can run twice with different settings" },
+    { what: "Settings for one activity in the run sheet", where: "Session Builder · Configure", go: "builder", note: "Per instance, so the same activity can run twice with different settings" },
     { what: "Questions, prompts, images and their categories", where: "Content", go: "content" },
     { what: "Reusable run sheets", where: "Here · Presets, and Session Builder · More" },
     { what: "Backups and stored data", where: "Here · Data" },
@@ -6681,10 +6683,10 @@ details.menu.left .menu-pop { right: auto; left: 0; }
         : `<div class="panel"><h3>This session</h3><p class="sub">No session is open. Session settings, participants, teams and the run sheet appear here once one is.</p><div class="btn-row"><button class="btn sm" data-nav="home">Open or create a session</button></div></div>`}
 
         <div class="panel"><h3>Activity defaults</h3>
-          <p class="sub">Set how each game should start out, once, instead of reconfiguring it every time you add it. These apply to activities you add from now on; anything already on a run sheet keeps its own settings.</p>
+          <p class="sub">Set how each activity should start out, once, instead of reconfiguring it every time you add it. These apply to activities you add from now on; anything already on a run sheet keeps its own settings.</p>
           ${customised.length ? `<div class="stack" style="margin:12px 0">${customised.map(g => `<div class="msg-card"><div><b>${esc(g.name)}</b><div class="muted small">${esc(Object.keys(TCL.state.settings.gameDefaults[g.id]).map(k => k + " = " + JSON.stringify(TCL.state.settings.gameDefaults[g.id][k])).join(" · ").slice(0, 140))}</div></div>
-            <div class="btn-row"><button class="btn sm ghost" data-game-defaults="${g.id}">Edit</button><button class="btn sm ghost" data-clear-defaults="${g.id}">Reset</button></div></div>`).join("")}</div>` : `<p class="dim small" style="margin:10px 0">Nothing customised yet: every game starts from its built-in defaults.</p>`}
-          <div class="btn-row"><button class="btn sm" data-pick-defaults>${UI.icon("edit")} Change a game's defaults</button>${customised.length ? `<button class="btn sm ghost" data-clear-defaults="">Reset all ${customised.length}</button>` : ""}</div></div>
+            <div class="btn-row"><button class="btn sm ghost" data-game-defaults="${g.id}">Edit</button><button class="btn sm ghost" data-clear-defaults="${g.id}">Reset</button></div></div>`).join("")}</div>` : `<p class="dim small" style="margin:10px 0">Nothing customised yet: every activity starts from its built-in defaults.</p>`}
+          <div class="btn-row"><button class="btn sm" data-pick-defaults>${UI.icon("edit")} Change an activity's defaults</button>${customised.length ? `<button class="btn sm ghost" data-clear-defaults="">Reset all ${customised.length}</button>` : ""}</div></div>
 
         <div class="panel"><h3>Content</h3><p class="sub">${TCL.Content.all().length} items across ${games.filter(g => g.contentGame).length} games: questions, prompts, words, scenarios and images. Add your own, edit or disable the built-ins, and see what has been used.</p>
           <div class="btn-row"><button class="btn sm ghost" data-nav="content">${UI.icon("content")} Open the content manager</button></div></div>
@@ -6748,7 +6750,7 @@ details.menu.left .menu-pop { right: auto; left: 0; }
   /* Choose which game's defaults to change. */
   UI.gameDefaultsPicker = function () {
     const games = TCL.Games.list();
-    return UI.modal({ title: "Which game?", wide: true,
+    return UI.modal({ title: "Which activity?", wide: true,
       form: `<div class="pick-grid">${games.map(g => `<button type="button" class="pick-card" data-def="${g.id}"><span class="icon">${g.icon}</span>
         <span class="body"><b>${esc(g.name)}</b><span class="muted small">${esc(g.tagline || g.description)}</span>
         <span class="meta"><span class="badge">${esc(g.category)}</span>${TCL.Games.hasOverrides(g.id) ? '<span class="badge ok">customised</span>' : ""}</span></span></button>`).join("")}</div>`,
@@ -6832,14 +6834,14 @@ details.menu.left .menu-pop { right: auto; left: 0; }
         <div class="page-head"><div><span class="eyebrow gold">${C.all().length} items · ${TCL.state.content.custom.length} custom</span><h1>Content Manager</h1><p>Search, edit, disable or extend the question banks. Built-in items can be edited or disabled but never deleted; "Restore built-in" undoes those changes.</p></div>
           <div class="btn-row"><button class="btn" data-add>${UI.icon("plus")} Add item</button><button class="btn ghost" data-import>${UI.icon("import")} Import</button><button class="btn ghost" data-export="json">${UI.icon("export")} Export JSON</button><button class="btn ghost" data-export="csv">Export CSV</button></div></div>
         <div class="panel tight"><div class="row" style="gap:10px">
-          <select class="input sm" data-f="game" style="width:220px"><option value="">All games</option>${games.map(g => `<option value="${g}" ${filt.game === g ? "selected" : ""}>${esc(gameLabel(g))} (${C.all(g).length})</option>`).join("")}</select>
+          <select class="input sm" data-f="game" style="width:220px"><option value="">All activities</option>${games.map(g => `<option value="${g}" ${filt.game === g ? "selected" : ""}>${esc(gameLabel(g))} (${C.all(g).length})</option>`).join("")}</select>
           <input class="input sm" data-f="q" placeholder="Search…" value="${esc(filt.q)}" style="width:220px" aria-label="Search content">
           <select class="input sm" data-f="cat" style="width:180px"><option value="">All categories</option>${cats.map(c => `<option value="${esc(c)}" ${filt.cat === c ? "selected" : ""}>${esc(c)}</option>`).join("")}</select>
           <select class="input sm" data-f="diff" style="width:140px"><option value="">Any difficulty</option><option value="1" ${filt.diff === "1" ? "selected" : ""}>★ Easy</option><option value="2" ${filt.diff === "2" ? "selected" : ""}>★★ Medium</option><option value="3" ${filt.diff === "3" ? "selected" : ""}>★★★ Hard</option></select>
           <select class="input sm" data-f="state" style="width:150px">${[["all", "All"], ["enabled", "Enabled"], ["disabled", "Disabled"], ["used", "Used"], ["unused", "Unused"], ["custom", "Custom only"]].map(o => `<option value="${o[0]}" ${filt.state === o[0] ? "selected" : ""}>${o[1]}</option>`).join("")}</select>
           <span class="dim small">${items.length} shown</span></div>
           <div class="btn-row" style="margin-top:10px"><button class="btn xs ghost" data-reset-usage>Reset usage history${filt.game ? " for " + esc(gameLabel(filt.game)) : ""}</button><button class="btn xs ghost" data-restore>Restore built-in${filt.game ? " for " + esc(gameLabel(filt.game)) : ""}</button><button class="btn xs ghost" data-pack ${filt.game ? "" : "disabled"}>Save filtered as pack</button>${packs.map(p => `<span class="chip">${esc(p.name)} (${p.itemIds.length}) <button class="icon-btn" style="width:22px;height:22px" data-delpack="${p.id}" aria-label="Delete pack">${UI.icons.x}</button></span>`).join("")}</div></div>
-        <div class="table-wrap" style="margin-top:14px"><table class="tbl"><thead><tr><th>Item</th><th>Game</th><th>Category</th><th>Diff.</th><th>Used</th><th>Status</th><th></th></tr></thead><tbody>
+        <div class="table-wrap" style="margin-top:14px"><table class="tbl"><thead><tr><th>Item</th><th>Activity</th><th>Category</th><th>Diff.</th><th>Used</th><th>Status</th><th></th></tr></thead><tbody>
           ${items.slice(0, 400).map(it => { const u = C.usageOf(it.id); return `<tr class="${it.enabled ? "" : "dim"}"><td><div style="${it.enabled ? "" : "text-decoration:line-through"}">${preview(it)}</div><div class="dim tiny">${secondary(it)}</div></td><td class="small">${esc(gameLabel(it.game))}</td><td class="small">${esc(it.category || "General")}</td><td class="small">${"★".repeat(it.difficulty || 2)}</td><td class="small">${u ? `${u.count}×` : "—"}</td><td><span class="badge ${it.enabled ? "active" : "skipped"}">${it.enabled ? (it.builtIn ? "built in" : "custom") : "disabled"}</span></td>
             <td><div class="btn-row" style="flex-wrap:nowrap"><button class="icon-btn" data-edit="${it.id}" title="Edit" aria-label="Edit">${UI.icons.edit}</button><button class="icon-btn" data-dupi="${it.id}" title="Duplicate" aria-label="Duplicate">${UI.icons.copy}</button><button class="icon-btn" data-toggle="${it.id}" title="${it.enabled ? "Disable" : "Enable"}" aria-label="${it.enabled ? "Disable" : "Enable"}">${UI.icons[it.enabled ? "x" : "check"]}</button><button class="icon-btn" data-used="${it.id}" title="${u ? "Mark unused" : "Mark used"}" aria-label="${u ? "Mark unused" : "Mark used"}">${UI.icons.flag}</button>${it.builtIn ? "" : `<button class="icon-btn danger" data-del="${it.id}" title="Delete" aria-label="Delete">${UI.icons.trash}</button>`}</div></td></tr>`; }).join("") || `<tr><td colspan="7"><div class="empty">Nothing matches these filters.</div></td></tr>`}
           ${items.length > 400 ? `<tr><td colspan="7" class="dim small">Showing the first 400. Narrow the filters to see more.</td></tr>` : ""}</tbody></table></div>
@@ -6856,7 +6858,7 @@ details.menu.left .menu-pop { right: auto; left: 0; }
         if (b.dataset.toggle) { const it = C.get(b.dataset.toggle); C.setEnabled(it.id, !it.enabled); TCL.persist(); UI.render(); return; }
         if (b.dataset.used) { const it = C.get(b.dataset.used); if (C.usageOf(it.id)) C.markUnused([it.id]); else C.markUsed([it.id]); TCL.persist(); UI.render(); return; }
         if (b.dataset.del) { if (await UI.confirm("Delete custom item?", "This custom item will be removed permanently.", { danger: true, okLabel: "Delete" })) { C.remove(b.dataset.del); TCL.persist(); UI.render(); } return; }
-        if (b.hasAttribute("data-reset-usage")) { if (await UI.confirm("Reset usage history?", `Usage marks ${filt.game ? "for " + esc(gameLabel(filt.game)) : "for all games"} will be cleared, so "previously unused only" treats every item as fresh.`, { okLabel: "Reset" })) { C.resetUsage(filt.game || null); TCL.persist(); UI.render(); } return; }
+        if (b.hasAttribute("data-reset-usage")) { if (await UI.confirm("Reset usage history?", `Usage marks ${filt.game ? "for " + esc(gameLabel(filt.game)) : "for all activities"} will be cleared, so "previously unused only" treats every item as fresh.`, { okLabel: "Reset" })) { C.resetUsage(filt.game || null); TCL.persist(); UI.render(); } return; }
         if (b.hasAttribute("data-restore")) { if (await UI.confirm("Restore built-in content?", "Edits and disabled flags on built-in items will be undone. Custom items are kept.", { okLabel: "Restore" })) { C.restoreBuiltIn(filt.game || null); TCL.persist(); UI.render(); } return; }
         if (b.hasAttribute("data-pack")) { const name = await UI.prompt("Save pack", `${filtered().length} filtered items will be saved as a named pack for ${esc(gameLabel(filt.game))}.`, "", { label: "Pack name" }); if (name) { C.savePack(name, filt.game, filtered().map(i => i.id)); TCL.persist(); UI.render(); } return; }
         if (b.dataset.delpack) { C.deletePack(b.dataset.delpack); TCL.persist(); UI.render(); return; }
@@ -6870,7 +6872,7 @@ details.menu.left .menu-pop { right: auto; left: 0; }
     const existing = id ? C.get(id) : null;
     game = existing ? existing.game : game;
     const spec = C.spec(game);
-    const fields = [{ key: "game", label: "Game", type: "select", options: C.gamesWithContent().map(g => ({ value: g, label: gameLabel(g) })) }, { key: "category", label: "Category", type: "text" }, { key: "difficulty", label: "Difficulty", type: "select", options: [{ value: 1, label: "★ Easy" }, { value: 2, label: "★★ Medium" }, { value: 3, label: "★★★ Hard" }] }]
+    const fields = [{ key: "game", label: "Activity", type: "select", options: C.gamesWithContent().map(g => ({ value: g, label: gameLabel(g) })) }, { key: "category", label: "Category", type: "text" }, { key: "difficulty", label: "Difficulty", type: "select", options: [{ value: 1, label: "★ Easy" }, { value: 2, label: "★★ Medium" }, { value: 3, label: "★★★ Hard" }] }]
       .concat(spec.map(f => ({ key: f.key, label: f.label + (f.required ? "" : " (optional)"), type: f.type === "list" ? "textarea" : f.type === "number" ? "number" : f.type === "svg" ? "textarea" : f.type === "textarea" ? "textarea" : "text", help: f.type === "list" ? "One per line" : f.type === "svg" ? "Paste SVG markup (<svg …>…</svg>)" : f.help })));
     const values = Object.assign({ game, category: "General", difficulty: 2 }, existing || {});
     spec.forEach(f => { if (f.type === "list" && Array.isArray(values[f.key])) values[f.key] = values[f.key].join("\n"); });
@@ -6887,7 +6889,7 @@ details.menu.left .menu-pop { right: auto; left: 0; }
   UI.importContent = async function () {
     const games = C.gamesWithContent();
     const v = await UI.modal({ title: "Import content", wide: true, body: `Paste JSON (an array of items or an export file) or CSV with a header row. Required columns per game: ${games.map(g => `<b>${esc(gameLabel(g))}</b>: game=${g}, ${C.spec(g).filter(f => f.required).map(f => f.key).join(", ")}`).join("; ")}.`,
-      form: `<div class="form-grid"><div class="field"><label for="imp-fmt">Format</label><select class="input" id="imp-fmt"><option value="json">JSON</option><option value="csv">CSV</option></select></div><div class="field"><label for="imp-game">Default game for CSV rows without a game column</label><select class="input" id="imp-game">${games.map(g => `<option value="${g}">${esc(gameLabel(g))}</option>`).join("")}</select></div><div class="field span2"><label for="imp-text">Data</label><textarea class="input" id="imp-text" rows="10"></textarea></div></div>`,
+      form: `<div class="form-grid"><div class="field"><label for="imp-fmt">Format</label><select class="input" id="imp-fmt"><option value="json">JSON</option><option value="csv">CSV</option></select></div><div class="field"><label for="imp-game">Default activity for CSV rows without an activity column</label><select class="input" id="imp-game">${games.map(g => `<option value="${g}">${esc(gameLabel(g))}</option>`).join("")}</select></div><div class="field span2"><label for="imp-text">Data</label><textarea class="input" id="imp-text" rows="10"></textarea></div></div>`,
       buttons: [{ label: "Cancel", value: null }, { label: "Validate and import", primary: true, value: el => ({ fmt: el.querySelector("#imp-fmt").value, game: el.querySelector("#imp-game").value, text: el.querySelector("#imp-text").value }) }] });
     if (!v || !v.text.trim()) return;
     const res = v.fmt === "json" ? C.importJSON(v.text) : C.importCSV(v.text, v.game);
@@ -7055,7 +7057,7 @@ details.menu.left .menu-pop { right: auto; left: 0; }
   function activityView(s, a) {
     const g = a.kind === "game" ? TCL.Games.get(a.gameId) : null;
     let body = "";
-    if (g) { try { body = g.console(R.ctx(a)); } catch (e) { console.error(e); body = UI.callout("error", "This game view failed to render: " + esc(e.message)); } }
+    if (g) { try { body = g.console(R.ctx(a)); } catch (e) { console.error(e); body = UI.callout("error", "This activity view failed to render: " + esc(e.message)); } }
     else body = `<div class="stage"><span class="eyebrow gold">${a.kind === "break" ? "Break" : "Custom activity"}</span><div class="prompt">${esc(a.title)}</div><p class="muted">${esc(a.settings.message || "")}</p>${a.settings.instructions ? `<ol class="step-list" style="margin-top:12px;text-align:left">${String(a.settings.instructions).split("\n").filter(Boolean).map(x => `<li>${esc(x)}</li>`).join("")}</ol>` : ""}<div class="ctl-row" style="margin-top:16px">${UI.ring(a.kind === "break" ? "break" : "round")}</div></div>`;
     const idx = s.runSheet.indexOf(a);
     let complete = a.kind !== "game";
@@ -7431,7 +7433,7 @@ details.menu.left .menu-pop { right: auto; left: 0; }
         ${!shared && scoring && !noScores ? `<div class="podium">${order.map(r => `<div class="spot p${r.rank}" style="--tc:${r.color}"><div class="medal">${medals[r.rank - 1] || "🏅"}</div><div class="block"><div class="tname">${esc(r.name)}</div><div class="tpts">${r.total} pts</div></div></div>`).join("")}</div>` : ""}
         ${!scoring ? "" : `<div class="grid cols-2" style="margin-top:20px">
           <div class="panel"><div class="row between"><h3 style="margin:0">Score breakdown</h3><span class="chip mono">${esc(TCL.Scoring.modelShort(s))}</span></div><div class="table-wrap" style="margin-top:10px"><table class="tbl"><tr><th>Team</th>${games.map(a => `<th class="num">${esc(a.title)}</th>`).join("")}<th class="num">Manual</th><th class="num">Total</th></tr>
-            ${rows.map(r => `<tr><td style="color:${r.color};font-weight:700">${esc(r.name)}</td>${games.map(a => `<td class="num">${(per[a.id] || {})[r.id] || 0}</td>`).join("")}<td class="num">${(per.manual || {})[r.id] || 0}</td><td class="num" style="font-weight:700">${r.total}</td></tr>`).join("")}</table></div>${model !== "raw" ? `<p class="dim small" style="margin-top:8px">Raw points awarded by the games: ${rows.map(r => esc(r.name) + " " + r.raw).join(" · ")}.</p>` : ""}</div>
+            ${rows.map(r => `<tr><td style="color:${r.color};font-weight:700">${esc(r.name)}</td>${games.map(a => `<td class="num">${(per[a.id] || {})[r.id] || 0}</td>`).join("")}<td class="num">${(per.manual || {})[r.id] || 0}</td><td class="num" style="font-weight:700">${r.total}</td></tr>`).join("")}</table></div>${model !== "raw" ? `<p class="dim small" style="margin-top:8px">Raw points awarded by the activities: ${rows.map(r => esc(r.name) + " " + r.raw).join(" · ")}.</p>` : ""}</div>
           <div class="panel"><h3>Points by activity</h3>${games.map(a => { const max = Math.max(1, ...rows.map(r => (per[a.id] || {})[r.id] || 0)); return `<div class="eyebrow" style="margin:10px 0 6px">${esc(a.title)}</div>${rows.map(r => `<div class="row" style="gap:8px;margin-bottom:5px;--tc:${r.color}"><span class="small" style="width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(r.name)}</span><div class="bar-track" style="flex:1"><div class="bar-fill" style="width:${((per[a.id] || {})[r.id] || 0) / max * 100}%"></div></div><span class="mono small" style="width:34px;text-align:right">${(per[a.id] || {})[r.id] || 0}</span></div>`).join("")}`; }).join("") || '<span class="dim">No scored activities.</span>'}</div>
         </div>`}
         ${awards.length && !shared ? `<div class="grid cols-3" style="margin-top:16px">${awards.map(a => `<div class="card" style="text-align:center"><div style="font-size:32px">${a.icon}</div><div class="eyebrow gold" style="margin:8px 0 4px">${esc(a.title)}</div><div style="font-weight:700;font-size:18px">${esc(a.who)}</div><div class="dim small">${esc(a.note)}</div></div>`).join("")}</div>` : ""}

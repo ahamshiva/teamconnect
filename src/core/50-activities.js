@@ -122,7 +122,7 @@
     if (cur && cur.id !== a.id && cur.status === "active") return { ok: false, reason: `"${cur.title}" is still active. Pause or end it first.` };
     if (a.kind === "game") {
       const g = TCL.Games.get(a.gameId);
-      if (!g) return { ok: false, reason: "Unknown game." };
+      if (!g) return { ok: false, reason: "Unknown activity." };
       const problems = Runner.validate(a).filter(p => p.level === "error");
       if (problems.length && !a.forceStart) return { ok: false, reason: problems.map(p => p.message).join(" "), problems };
     }
@@ -159,7 +159,7 @@
 
   Runner.validate = function (a) {
     const s = TCL.session();
-    const g = TCL.Games.get(a.gameId); if (!g) return [{ level: "error", message: "Unknown game" }];
+    const g = TCL.Games.get(a.gameId); if (!g) return [{ level: "error", message: "Unknown activity" }];
     const settings = Runner.settingsOf(a);
     const ctx = { participants: TCL.Teams.present(s), teams: s.teams, teamMode: s.teamMode, session: s, settings, content: q => TCL.Content.select(Object.assign({ game: g.contentGame }, q)) };
     const out = [];

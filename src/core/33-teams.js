@@ -156,7 +156,7 @@
     const out = [];
     const n = Teams.present(s).length;
     if (n === 0) out.push({ level: "error", message: "No participants are marked present." });
-    else if (n === 1) out.push({ level: "warn", message: "Only one participant is present. Most games need at least two." });
+    else if (n === 1) out.push({ level: "warn", message: "Only one participant is present. Most activities need at least two." });
     if (s.teamMode === "teams") {
       if (!s.teams.length) out.push({ level: "warn", message: "No teams yet. Create teams or switch to individual mode." });
       s.teams.forEach(t => { if (!Teams.presentMembers(t, s).length) out.push({ level: "warn", message: `Team "${t.name}" has nobody present.` }); });

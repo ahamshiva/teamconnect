@@ -7,7 +7,7 @@
     { id: "home", label: "Home", icon: "home", always: true },
     { id: "builder", label: "Session Builder", icon: "builder" },
     { id: "participants", label: "Participants", icon: "people" },
-    { id: "library", label: "Game Library", icon: "library" },
+    { id: "library", label: "Activity Library", icon: "library" },
     { id: "content", label: "Content", icon: "content", always: true, advanced: true },
     { id: "settings", label: "Settings", icon: "settings", always: true },
   ];
@@ -70,7 +70,7 @@
     const s = TCL.session();
     if (!s || !s.rehearsal) return "";
     return `<div class="rehearsal-bar">${UI.icon("play")}<div><b>REHEARSAL</b> · sample people, ${TCL.Rehearsal.SPEED}× faster timers, no real scores and no questions used up.</div>
-      <div class="btn-row"><button class="btn xs ghost" data-rehearse-jump>Jump to a game</button><button class="btn xs" data-rehearse-end>End rehearsal</button></div></div>`;
+      <div class="btn-row"><button class="btn xs ghost" data-rehearse-jump>Jump to an activity</button><button class="btn xs" data-rehearse-end>End rehearsal</button></div></div>`;
   };
 
   /* Planning tools disappear once the session goes live: during play the sidebar answers
@@ -203,10 +203,10 @@
   };
   UI.rehearsalJump = async function () {
     const games = TCL.Games.list();
-    const v = await UI.modal({ title: "Jump straight to a game", wide: true, body: "<p>Starts that game immediately with sample people and short timers. Whatever is running now is reset.</p>",
+    const v = await UI.modal({ title: "Jump straight to an activity", wide: true, body: "<p>Starts that activity immediately with sample people and short timers. Whatever is running now is reset.</p>",
       form: `<div class="grid cols-3">${games.map(g => `<button type="button" class="card clickable" data-jump="${g.id}" style="text-align:left"><div class="row between"><span class="icon">${g.icon}</span></div><h3 style="margin-top:6px">${esc(g.name)}</h3><p>${esc(g.tagline || g.description)}</p></button>`).join("")}</div>`,
       buttons: [{ label: "Cancel", value: null }],
-      onOpen: el => el.addEventListener("click", ev => { const b = ev.target.closest("[data-jump]"); if (b) { UI.closeModal(); const r = TCL.Rehearsal.jumpTo(b.dataset.jump); if (!r.ok) UI.toast(r.reason || "Could not start that game", "warn"); TCL.go("console"); } }) });
+      onOpen: el => el.addEventListener("click", ev => { const b = ev.target.closest("[data-jump]"); if (b) { UI.closeModal(); const r = TCL.Rehearsal.jumpTo(b.dataset.jump); if (!r.ok) UI.toast(r.reason || "Could not start that activity", "warn"); TCL.go("console"); } }) });
     return v;
   };
 })();

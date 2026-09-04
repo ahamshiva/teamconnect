@@ -138,7 +138,7 @@
   function activityView(s, a) {
     const g = a.kind === "game" ? TCL.Games.get(a.gameId) : null;
     let body = "";
-    if (g) { try { body = g.console(R.ctx(a)); } catch (e) { console.error(e); body = UI.callout("error", "This game view failed to render: " + esc(e.message)); } }
+    if (g) { try { body = g.console(R.ctx(a)); } catch (e) { console.error(e); body = UI.callout("error", "This activity view failed to render: " + esc(e.message)); } }
     else body = `<div class="stage"><span class="eyebrow gold">${a.kind === "break" ? "Break" : "Custom activity"}</span><div class="prompt">${esc(a.title)}</div><p class="muted">${esc(a.settings.message || "")}</p>${a.settings.instructions ? `<ol class="step-list" style="margin-top:12px;text-align:left">${String(a.settings.instructions).split("\n").filter(Boolean).map(x => `<li>${esc(x)}</li>`).join("")}</ol>` : ""}<div class="ctl-row" style="margin-top:16px">${UI.ring(a.kind === "break" ? "break" : "round")}</div></div>`;
     const idx = s.runSheet.indexOf(a);
     let complete = a.kind !== "game";

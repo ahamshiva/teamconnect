@@ -73,7 +73,7 @@
   Scoring.MODELS = [
     { id: "balanced", short: "Balanced", label: "Balanced: every scored activity is worth up to 100", help: "Each activity's points are scaled so the best team in it earns 100. A long quiz counts the same as a short game." },
     { id: "placement", short: "Placement", label: "Placement: 30 / 20 / 10 per activity", help: "Only the order within each activity matters. Ties share the higher award." },
-    { id: "raw", short: "Raw points", label: "Raw: the points the games award", help: "Whatever each game gives. Simple, but a big activity can decide the session." },
+    { id: "raw", short: "Raw points", label: "Raw: the points the activities award", help: "Whatever each activity gives. Simple, but a big activity can decide the session." },
   ];
   Scoring.PLACEMENT = [30, 20, 10];
   Scoring.model = function (session) { const s = session || TCL.session(); return (s && s.scoreModel) || "raw"; };

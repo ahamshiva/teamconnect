@@ -1,24 +1,24 @@
-/* src/ui/40-library.js  Game Library browse view + Settings screen. */
+/* src/ui/40-library.js  Activity Library browse view + Settings screen. */
 (function () {
   "use strict";
   const TCL = window.TCL, U = TCL.util, esc = U.esc, UI = TCL.UI;
 
   UI.registerScreen("library", {
-    title: "Game Library",
+    title: "Activity Library",
     render() {
       const s = TCL.session();
       const games = TCL.Games.list();
       const cats = Array.from(new Set(games.map(g => g.category)));
       const ctx = TCL.Duration.ctx(s);
       return UI.shell(`<div class="content">
-        <div class="page-head"><div><span class="eyebrow gold">${games.length} activities</span><h1>Game Library</h1><p>Every activity is configurable per instance: rounds, timers, scoring, content and rules. Add any of them to the run sheet, as many times as you like.</p></div></div>
+        <div class="page-head"><div><span class="eyebrow gold">${games.length} activities</span><h1>Activity Library</h1><p>Every activity is configurable per instance: rounds, timers, scoring, content and rules. Add any of them to the run sheet, as many times as you like.</p></div></div>
         ${cats.map(c => `<h3 style="margin:22px 0 10px">${esc(c)}</h3><div class="grid cols-3">${games.filter(g => g.category === c).map(g => {
           const n = TCL.Content.all(g.contentGame).filter(x => x.enabled).length;
           return `<div class="card"><div class="row between"><span class="icon">${g.icon}</span><span class="chip mono">~${U.fmtMin(g.estimateMinutes(TCL.Games.defaults(g), ctx))} default</span></div>
             <h3>${esc(g.name)}</h3><p>${esc(g.description)}</p>
             <div class="meta">${g.modes.map(m => `<span class="badge">${m}</span>`).join("")}${g.contentGame ? `<span class="badge">${n} items</span>` : '<span class="badge">no content needed</span>'}${TCL.Games.defaults(g).scoringEnabled === false ? '<span class="badge">not scored</span>' : ""}${TCL.Games.hasOverrides(g.id) ? '<span class="badge ok">your defaults</span>' : ""}${TCL.Readiness.breakoutKind(g) === "always" ? '<span class="badge breakout">Breakout rooms required</span>' : TCL.Readiness.breakoutKind(g) === "sometimes" ? '<span class="badge breakout soft">Breakout rooms optional</span>' : ""}${g.needsZoom ? `<span class="badge">${esc(g.needsZoom)}</span>` : ""}</div>
             <div class="btn-row" style="margin-top:14px"><button class="btn sm" data-add="${g.id}" ${s ? "" : "disabled"}>${UI.icon("plus")} Add to run sheet</button>${g.contentGame ? `<button class="btn sm ghost" data-go="content" data-go-param="${g.contentGame}">Content</button>` : ""}</div></div>`; }).join("")}</div>`).join("")}
-      </div>`, { title: "Game Library" });
+      </div>`, { title: "Activity Library" });
     },
     mount(root) {
       root.addEventListener("click", e => { const b = e.target.closest("[data-add]"); if (b) { const a = TCL.Session.addActivity("game", b.dataset.add); UI.toast(`Added ${a.title} to the run sheet`, "ok"); UI.render(); } });
@@ -32,11 +32,11 @@
   const SETTINGS_MAP = [
     { what: "Console mode, sound, confirmations", where: "Here · How the console behaves" },
     { what: "Presentation size, scores on screen", where: "Here · The participant screen" },
-    { what: "Default settings for each game", where: "Here · Activity defaults", note: "Applies to activities you add from now on" },
+    { what: "Default settings for each activity", where: "Here · Activity defaults", note: "Applies to activities you add from now on" },
     { what: "This session: name, length, scoring, how activities are weighed, finale", where: "Here · This session" },
     { what: "Participants, teams, team names, attendance", where: "Participants", go: "participants" },
     { what: "Which activities run, in what order, for how long", where: "Session Builder", go: "builder" },
-    { what: "Settings for one activity in the run sheet", where: "Session Builder · Configure", go: "builder", note: "Per instance, so the same game can run twice with different settings" },
+    { what: "Settings for one activity in the run sheet", where: "Session Builder · Configure", go: "builder", note: "Per instance, so the same activity can run twice with different settings" },
     { what: "Questions, prompts, images and their categories", where: "Content", go: "content" },
     { what: "Reusable run sheets", where: "Here · Presets, and Session Builder · More" },
     { what: "Backups and stored data", where: "Here · Data" },
@@ -93,10 +93,10 @@
         : `<div class="panel"><h3>This session</h3><p class="sub">No session is open. Session settings, participants, teams and the run sheet appear here once one is.</p><div class="btn-row"><button class="btn sm" data-nav="home">Open or create a session</button></div></div>`}
 
         <div class="panel"><h3>Activity defaults</h3>
-          <p class="sub">Set how each game should start out, once, instead of reconfiguring it every time you add it. These apply to activities you add from now on; anything already on a run sheet keeps its own settings.</p>
+          <p class="sub">Set how each activity should start out, once, instead of reconfiguring it every time you add it. These apply to activities you add from now on; anything already on a run sheet keeps its own settings.</p>
           ${customised.length ? `<div class="stack" style="margin:12px 0">${customised.map(g => `<div class="msg-card"><div><b>${esc(g.name)}</b><div class="muted small">${esc(Object.keys(TCL.state.settings.gameDefaults[g.id]).map(k => k + " = " + JSON.stringify(TCL.state.settings.gameDefaults[g.id][k])).join(" · ").slice(0, 140))}</div></div>
-            <div class="btn-row"><button class="btn sm ghost" data-game-defaults="${g.id}">Edit</button><button class="btn sm ghost" data-clear-defaults="${g.id}">Reset</button></div></div>`).join("")}</div>` : `<p class="dim small" style="margin:10px 0">Nothing customised yet: every game starts from its built-in defaults.</p>`}
-          <div class="btn-row"><button class="btn sm" data-pick-defaults>${UI.icon("edit")} Change a game's defaults</button>${customised.length ? `<button class="btn sm ghost" data-clear-defaults="">Reset all ${customised.length}</button>` : ""}</div></div>
+            <div class="btn-row"><button class="btn sm ghost" data-game-defaults="${g.id}">Edit</button><button class="btn sm ghost" data-clear-defaults="${g.id}">Reset</button></div></div>`).join("")}</div>` : `<p class="dim small" style="margin:10px 0">Nothing customised yet: every activity starts from its built-in defaults.</p>`}
+          <div class="btn-row"><button class="btn sm" data-pick-defaults>${UI.icon("edit")} Change an activity's defaults</button>${customised.length ? `<button class="btn sm ghost" data-clear-defaults="">Reset all ${customised.length}</button>` : ""}</div></div>
 
         <div class="panel"><h3>Content</h3><p class="sub">${TCL.Content.all().length} items across ${games.filter(g => g.contentGame).length} games: questions, prompts, words, scenarios and images. Add your own, edit or disable the built-ins, and see what has been used.</p>
           <div class="btn-row"><button class="btn sm ghost" data-nav="content">${UI.icon("content")} Open the content manager</button></div></div>
@@ -160,7 +160,7 @@
   /* Choose which game's defaults to change. */
   UI.gameDefaultsPicker = function () {
     const games = TCL.Games.list();
-    return UI.modal({ title: "Which game?", wide: true,
+    return UI.modal({ title: "Which activity?", wide: true,
       form: `<div class="pick-grid">${games.map(g => `<button type="button" class="pick-card" data-def="${g.id}"><span class="icon">${g.icon}</span>
         <span class="body"><b>${esc(g.name)}</b><span class="muted small">${esc(g.tagline || g.description)}</span>
         <span class="meta"><span class="badge">${esc(g.category)}</span>${TCL.Games.hasOverrides(g.id) ? '<span class="badge ok">customised</span>' : ""}</span></span></button>`).join("")}</div>`,

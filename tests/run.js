@@ -1015,12 +1015,12 @@ async function seedSession(page, opts) {
     await page.evaluate(() => TCL.go("console"));
     await page.waitForSelector(".shell.planning");
     let nav = await page.evaluate(() => Array.from(document.querySelectorAll(".sidebar .nav-btn")).map(b => b.textContent.trim()));
-    ok(nav.includes("Session Builder") && nav.includes("Participants") && nav.includes("Game Library"), "planning sidebar has the planning tools: " + nav.join(", "));
+    ok(nav.includes("Session Builder") && nav.includes("Participants") && nav.includes("Activity Library"), "planning sidebar has the planning tools: " + nav.join(", "));
     await page.evaluate(() => TCL.Runner.start(TCL.session().runSheet[0].id));
     await page.waitForSelector(".shell.playing");
     nav = await page.evaluate(() => Array.from(document.querySelectorAll(".sidebar .nav-btn")).map(b => b.textContent.trim()));
     ok(nav.length === 4 && nav[0] === "Now playing" && nav[1] === "Run sheet" && nav[2] === "Scores" && nav[3] === "If something breaks", "live sidebar is four items: " + nav.join(", "));
-    ok(!nav.includes("Session Builder") && !nav.includes("Game Library"), "planning tools disappear during play");
+    ok(!nav.includes("Session Builder") && !nav.includes("Activity Library"), "planning tools disappear during play");
     /* The run sheet is reachable without stopping the activity. */
     await page.click("[data-nav-runsheet]");
     await page.waitForSelector(".backbar");

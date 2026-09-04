@@ -5,7 +5,7 @@ something true and get read aloud. **Result: 160 items checked, 1 correction.**
 
 ## Why these 160
 
-The knowledge games now carry a `difficultyMin` of 2, so every session draws from the medium and hard
+The knowledge activities now carry a `difficultyMin` of 2, so every session draws from the medium and hard
 end. That concentrates real sessions onto exactly the claims most likely to be challenged by a colleague
 who knows the subject, which is why the audit was scoped there rather than across the whole bank.
 
@@ -49,7 +49,7 @@ Worth recording, because it changes how much these banks should be trusted in fu
 
 - It covers built-in content at difficulty 2 and 3 **as of 2026-09-04**. Custom items added through the
   Content Manager, and imported packs, are not covered and never will be by this pass.
-- Difficulty 1 items were not audited. They are currently unreachable in the six floored games, but they
+- Difficulty 1 items were not audited. They are currently unreachable in the six floored activities, but they
   become reachable again the moment anyone lowers `difficultyMin` on an activity.
 - No `verified` field was added to the items. Marking 160 records to encode one clean pass would be a
   large diff carrying little information; this document plus the date is the record.
