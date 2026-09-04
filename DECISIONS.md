@@ -555,3 +555,21 @@ inside the ring.
 - Pushing uses the `ahamshiva` gh account, not the default `agniora`; switched for the push and switched
   back afterwards.
 - Removed eight stale `fail-*.png` sitting beside a passing `results.json`.
+
+## 2026-09-04 — The rehearsal, driven in a real browser
+- **Ran the app end to end as a facilitator**, not as a test suite: fresh profile, first-run screen,
+  Rehearse plus a real 45-minute session through to the podium. Zero console errors.
+- **Pacing offered two identical options.** "Shorten the remaining activities" and "One less question in
+  each remaining activity" both saved 23 min. Now the fit-targeted one wins when they converge; the
+  one-less option still appears when it genuinely differs. A dialog opened under time pressure must not
+  ask a question that has no answer.
+- **Regression tests must fail first.** Reverted the fix to confirm the new test reports `26,26` and
+  fails, then restored it. A regression test that passes either way is worthless.
+- **Four false alarms, all confirmed before acting.** Green banner with no visible tab, a session
+  "lost" on reload, Fact or Fiction "not scoring", missing presets. Every one was the test tool, not
+  the app. The browser restarting with an empty profile is the trap to remember: check
+  `localStorage.length` before believing data loss.
+- **Balanced scoring is correct but sounds wrong aloud.** 10 raw and 5 raw both display 100 because each
+  team leads a different activity. Documented for the facilitator to decide, not changed.
+- **Not machine-testable, still open:** Zoom compression on the shared window, and how the pacing of
+  turn-taking feels with real people.

@@ -1,5 +1,48 @@
 # HANDOVER — team_games
 
+## Where We Are (2026-09-04 session, part 17 · the rehearsal finally happened)
+Drove the app end to end as a facilitator in a real browser: fresh profile, empty storage, first-run
+screen onward. Two sessions played. The built-in **Rehearse** (17 activities, 5x timers) and a real
+45-minute "Funny and Clever" session with 15 people and 3 teams, through to the podium.
+
+**It holds up.** Zero console errors across the entire run. Private answers never crossed to the
+participant window on any of the three games checked. The cover screen covers completely. Undo works.
+The finish-early guard asks first. Breakout rooms produce a copyable Zoom broadcast. The finale handles
+a tie as joint first with no phantom second place. Two things I did not expect to be as good as they
+were: **a reload mid-activity recovers everything** (same activity, same item, same reveal state, same
+scores, session clock still counting off its timestamp), and **closing the presentation window flips the
+console straight back to the red do-not-share banner**.
+
+**One defect found and fixed.** Running late offered "Shorten the remaining activities" and "One less
+question in each remaining activity" as two options **both saving 23 min**, adjacent, same disruption
+level. That dialog opens when you are already behind with the team watching, so two identical-looking
+options is a decision under pressure with nothing to decide. Fixed in `src/core/37-pacing.js`, re-verified
+on the live app, regression test added that fails without the fix. Suite 402 -> **406**.
+
+**Four things looked like bugs and were not**, each confirmed before touching anything: the green
+"connected" banner with no visible second tab (real, the popup just is not enumerable by the test
+browser), a whole session vanishing after reload (the test browser restarted with an empty profile,
+`localStorage.length` was 0), Fact or Fiction scoring nothing (votes are correctly refused after reveal
+and the buttons are `disabled`, my scripted click bypassed that), and missing presets/uncover button
+(accessibility-tree truncation in the tool, the DOM is correct).
+
+**Exact Next Step: the part only people can do.** Two or three colleagues on a real Zoom. Watch three
+things specifically: does **Balanced scoring** sound fair read aloud (after one question, teams on 10 and
+5 raw points both showed **100**, which is exactly what Balanced promises but sounds wrong out loud, and
+totals can fall as an activity progresses); does the presentation survive **Zoom's compression** (verified
+at true 720p, but Zoom re-encodes the share and thin text smears in ways headless never shows); and is the
+cover screen reachable fast enough when someone needs a minute.
+
+**Full report:** `.gstack/qa-reports/qa-report-team-connect-2026-09-04.md` (18 screenshots).
+**Deferred, low:** results panels go lopsided above ~10 activities (rehearsal only; a real 5-activity
+session measured balanced at 559 vs 543px). The results score table scrolls rather than clips, but the
+macOS scrollbar is invisible until touched.
+
+**Files this part:** `src/core/37-pacing.js`, `tests/run.js`, rebuilt `team-connect.html` + `dev.html`.
+**Suites:** `run.js` **406** · `edge.js` 58 · both pass.
+**What is blocked:** nothing.
+**Session cost:** roughly $6-9 USD.
+
 ## Where We Are (2026-09-04 session, part 16 · version control and a public repo)
 Asked for further recommendations; ranked seven and said plainly that none of them beat the rehearsal,
 which has been the next step for eight sessions. Top of the list was the structural risk: **8,779 lines of
